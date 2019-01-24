@@ -20,7 +20,7 @@ module.exports = (config) => {
           throw new Error(`Unable to load record from database!`);
         
         config.properties.forEach((property) => {
-          if ( property.name == `id` || property.name == `archived` )
+          if ( property.name == `id` || !property.editable )
             return;
           
           obj[property.name](req.body[property.name]);
@@ -29,6 +29,8 @@ module.exports = (config) => {
         await obj.update(req.db);
         
         res.redirect(`list`);
+        
+        return;
       }
       
       /** Attempt to load object by id */
@@ -47,11 +49,16 @@ module.exports = (config) => {
       form.heading().rank(1).text(`Edit Record`);
       
       config.properties.forEach((property) => {
-        if ( property.name == `id` || property.name == `archived` )
+        if ( property.name == `id` || !property.editable )
           return;
         
-        if ( property.type == `varchar` )
-          form.text().name(property.name).label(property.formLabel).pattern(property.pattern || ``).value(obj[property.name]());
+        if ( property.type == `varchar` ) {
+          form.text().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).pattern(property.pattern).value(obj[property.name]()).required(property.required);
+        } else if ( property.type == `boolean` ) {
+          form.radios().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).required(property.required);
+          form.option().value(1).text(`Yes`).selected(obj[property.name]() == 1);
+          form.option().value(0).text(`No`).selected(obj[property.name]() == 0);
+        }
       });
       
       form.button().cols(6).colsBefore(2).type(`button`).text(`Cancel`);

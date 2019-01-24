@@ -122,6 +122,55 @@ module.exports.createAutoForm = (config, objClass) => {
   /** Create router */
   const router = express.Router();
   
+  /** Validate config */
+  if ( !config.tableName )
+    throw new Error(`Autoforms.createAutoForm(): Config missing required string 'tableName'.`);
+  
+  if ( typeof config.tableName !== `string` )
+    throw new Error(`Autoforms.createAutoForm(): Config 'tableName' is not a string.`);
+  
+  if ( !config.className )
+    throw new Error(`Autoforms.createAutoForm(): Config missing required string 'className'.`);
+  
+  if ( typeof config.className !== `string` )
+    throw new Error(`Autoforms.createAutoForm(): Config 'className' is not a string.`);
+  
+  if ( !config.properties )
+    throw new Error(`Autoforms.createAutoForm(): Config missing required array 'properties'.`);
+  
+  if ( typeof config.properties != `object` || config.properties.constructor.name != `Array` )
+    throw new Error(`Autoforms.createAutoForm(): Config 'properties' is not an array.`);
+  
+  /** Validate config properties */
+  config.properties.forEach((property) => {
+    if ( !property.cols )
+      property.cols = 16;
+    
+    if ( !property.colsBefore )
+      property.colsBefore = 0;
+    
+    if ( !property.colsAfter )
+      property.colsAfter = 0;
+    
+    if ( !property.pattern )
+      property.pattern = ``;
+    
+    if ( !property.required )
+      property.required = false;
+    
+    if ( !property.editable )
+      property.editable = property.name == `id` ? false : true;
+    
+    if ( !property.name )
+      throw new Error(`Autoforms.createAutoForm(): Property missing required 'name'.`);
+    
+    if ( !property.listHeader )
+      property.listHeader = property.name;
+    
+    if ( !property.formLabel )
+      property.formLabel = property.name;
+  });
+  
   router.use((req, res, next) => {
     /** Determine whether to use some configured values or defaults */
     req.addTemplate = config.editTemplate || fs.readFileSync(__dirname + `/templates/add.ejs`).toString();

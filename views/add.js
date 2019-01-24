@@ -16,7 +16,7 @@ module.exports = (config) => {
 
       if ( req.method == `POST` ) {
         config.properties.forEach((property) => {
-          if ( property.name == `id` || property.name == `archived` )
+          if ( property.name == `id` || !property.editable )
             return;
           
           obj[property.name](req.body[property.name]);
@@ -38,11 +38,16 @@ module.exports = (config) => {
       form.heading().rank(1).text(`Add Record`);
       
       config.properties.forEach((property) => {
-        if ( property.name == `id` || property.name == `archived` )
+        if ( property.name == `id` || !property.editable )
           return;
         
-        if ( property.type == `varchar` )
-          form.text().name(property.name).label(property.formLabel).pattern(property.pattern || ``);
+        if ( property.type == `varchar` ) {
+          form.text().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).pattern(property.pattern).value(obj[property.name]()).required(property.required);
+        } else if ( property.type == `boolean` ) {
+          form.radios().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).required(property.required);
+          form.option().value(1).text(`Yes`);
+          form.option().value(0).text(`No`).selected(true);
+        }
       });
       
       form.button().cols(6).colsBefore(2).type(`button`).text(`Cancel`);

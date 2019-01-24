@@ -16,31 +16,31 @@ module.exports = (config, objClass) => {
       /** Begin SELECT query */
       let query = `SELECT SQL_CALC_FOUND_ROWS id, `;
 
-      /** Identify ordered search results properties */
-      const orderedSearchResultsProperties = config.properties.filter(x => x.searchResults && typeof x.searchResultsOrder === `number`);
+      /** Identify ordered column properties */
+      const orderedColumnProperties = config.properties.filter(x => x.showInList && typeof x.columnOrder === `number`);
 
-      /** Sort search results properties by search results order */
-      orderedSearchResultsProperties.sort((a, b) => {
-        if ( a.searchResultsOrder < b.searchResultsOrder )
+      /** Sort ordered column properties by column order number */
+      orderedColumnProperties.sort((a, b) => {
+        if ( a.columnOrder < b.columnOrder )
           return -1;
-        else if ( a.searchResultsOrder > b.searchResultsOrder )
+        else if ( a.columnOrder > b.columnOrder )
           return 1;
 
         return 0;
       });
 
-      /** Add ordered search results fields to query */
-      orderedSearchResultsProperties.forEach((property) => {
-        if ( property.searchResults )
+      /** Add ordered column properties to query */
+      orderedColumnProperties.forEach((property) => {
+        if ( property.showInList )
           query += `${property.name}, `;
       });
 
-      /** Identify remaining non-ordered search results properties */
-      const remainingSearchResultsProperties = config.properties.filter(x => x.searchResults && !orderedSearchResultsProperties.includes(x));
+      /** Identify remaining non-ordered column properties */
+      const remainingColumnProperties = config.properties.filter(x => x.showInList && !orderedColumnProperties.includes(x));
 
-      /** Add remaining non-ordered search results fields to query */
-      remainingSearchResultsProperties.forEach((property) => {
-        if ( property.searchResults )
+      /** Add remaining non-ordered column properties to query */
+      remainingColumnProperties.forEach((property) => {
+        if ( property.showInList )
           query += `${property.name}, `;
       });
 
@@ -91,14 +91,14 @@ module.exports = (config, objClass) => {
       /** Start table row */
       table.row();
 
-      /** Add ordered search results headers */
-      orderedSearchResultsProperties.forEach((property) => {
-        table.header().text(property.searchHeader);
+      /** Add ordered list headers */
+      orderedColumnProperties.forEach((property) => {
+        table.header().text(property.listHeader);
       });
 
-      /** Add remaining non-ordered search results headers */
-      remainingSearchResultsProperties.forEach((property) => {
-        table.header().text(property.searchHeader);
+      /** Add remaining non-ordered list headers */
+      remainingColumnProperties.forEach((property) => {
+        table.header().text(property.listHeader);
       });
 
       /** If user is logged in and table is editable, add header placeholder for edit buttons */
@@ -119,7 +119,7 @@ module.exports = (config, objClass) => {
 
         /** Loop through each column of this search result row */
         Object.keys(row).forEach((key) => {
-          if ( key == `id` && !orderedSearchResultsProperties.find(x => x.name == `id`) && !remainingSearchResultsProperties.find(x => x.name == `id`) )
+          if ( key == `id` && !orderedColumnProperties.find(x => x.name == `id`) && !remainingColumnProperties.find(x => x.name == `id`) )
             return;
           
           /** Add table data for column value */
@@ -136,7 +136,7 @@ module.exports = (config, objClass) => {
       });
       
       if ( results.length == 0 ) {
-        let colspan = orderedSearchResultsProperties.length + remainingSearchResultsProperties.length;
+        let colspan = orderedColumnProperties.length + remainingColumnProperties.length;
         
         if ( req.user && config.editable )
           colspan++;
