@@ -1,0 +1,357 @@
+form, * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+  padding: 0px;
+  margin: 5px 0px 5px 0px;
+}
+
+form {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  -o-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  -o-flex-wrap: wrap;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin: auto;
+}
+form h1, form h2, form h3, form h4, form h5, form h6 {
+  flex-grow: 16;
+  width: 100%;
+}
+
+button {
+  padding: 10px 15px 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  width: 100%;
+  border: 1px solid #9b9b9b;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+textarea {
+  width: 100%;
+}
+
+label {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+input[type=text], input[type=password], input[type=email], input[type=tel], input[type=file], input[type=number], input[type=url] {
+  padding: 6px;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 16px;
+  font-family: system-ui;
+}
+
+input[type=color] {
+  height: 32px;
+}
+
+input[type=date], input[type=datetime-local], input[type=time], input[type=month], input[type=week] {
+  padding: 3px;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 16px;
+  font-family: system-ui;
+}
+
+input[type=range] {
+  margin-top: 3px;
+}
+
+input[type=radio] {
+  display: inline-block;
+}
+
+select {
+  margin: 1px 0px 0px 0px;
+  font-size: 16px;
+  width: 100%;
+  -webkit-appearance: menulist-button;
+}
+
+select:not([multiple]) {
+  height: 33px;
+}
+
+select[multiple] {
+  font-size: 16px;
+  -webkit-appearance: none;
+  background: white;
+}
+
+.col-16, .col-15, .col-14, .col-13, .col-12, .col-11, .col-10, .col-9, .col-8, .col-7, .col-6, .col-5, .col-4, .col-3, .col-2, .col-1 {
+  margin-bottom: 15px;
+  padding-right: 10px;
+}
+
+.col-1 {
+  flex-grow: 1;
+  width: 6.25%;
+}
+
+.col-2 {
+  flex-grow: 2;
+  width: 12.5%;
+}
+
+.col-3 {
+  flex-grow: 3;
+  width: 18.75%;
+}
+
+.col-4 {
+  flex-grow: 4;
+  width: 25%;
+}
+
+.col-5 {
+  flex-grow: 5;
+  width: 31.25%;
+}
+
+.col-6 {
+  flex-grow: 6;
+  width: 37.5%;
+}
+
+.col-7 {
+  flex-grow: 7;
+  width: 43.75%;
+}
+
+.col-8 {
+  flex-grow: 8;
+  width: 50%;
+}
+
+.col-9 {
+  flex-grow: 9;
+  width: 56.25%;
+}
+
+.col-10 {
+  flex-grow: 10;
+  width: 62.5%;
+}
+
+.col-11 {
+  flex-grow: 11;
+  width: 68.75%;
+}
+
+.col-12 {
+  flex-grow: 12;
+  width: 75%;
+}
+
+.col-13 {
+  flex-grow: 13;
+  width: 81.25%;
+}
+
+.col-14 {
+  flex-grow: 14;
+  width: 87.5%;
+}
+
+.col-15 {
+  flex-grow: 15;
+  width: 93.75%;
+}
+
+.col-16 {
+  flex-grow: 16;
+  width: 100%;
+}
+
+.options-vertical, .options-horizontal {
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  -moz-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  -o-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+
+.options-horizontal {
+  height: 34px;
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  -o-flex-direction: row;
+  flex-direction: row;
+  align-items: center;
+}
+
+.options-vertical {
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  -o-flex-direction: column;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.options-vertical > div, .options-horizontal > div {
+  padding: 0px 5px 0px 5px;
+}
+.options-vertical > div label, .options-horizontal > div label {
+  display: inline-block;
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+
+.options-horizontal > div {
+  display: inline-block;
+}
+
+.options-vertical > div {
+  display: block;
+}
+
+button {
+  margin-top: 10px;
+}
+
+.alert-success, .alert-info, .alert-warning, .alert-error {
+  width: 100%;
+  border-radius: 10px;
+  padding: 15px 10px 15px 10px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.alert-error {
+  color: #c60d26;
+  border: 2px solid rgba(198, 13, 38, 0.5);
+  background-color: rgba(198, 13, 38, 0.3);
+  margin-left: -50px;
+  margin-right: -50px;
+}
+
+.alert-warning {
+  color: #ff9400;
+  border: 2px solid rgba(255, 148, 0, 0.5);
+  background-color: rgba(255, 148, 0, 0.3);
+}
+
+.alert-info {
+  color: #0087ff;
+  border: 2px solid rgba(0, 135, 255, 0.5);
+  background-color: rgba(0, 135, 255, 0.3);
+}
+
+.alert-success {
+  color: #328427;
+  border: 2px solid rgba(50, 132, 39, 0.5);
+  background-color: rgba(50, 132, 39, 0.3);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #446e9b;
+}
+
+button[type=reset] {
+  color: white;
+  background: #e10000;
+}
+
+button[type=reset]:hover {
+  background: rgba(225, 0, 0, 0.8);
+}
+
+button[type=button] {
+  color: white;
+  background: #7d7d7d;
+}
+
+button[type=button]:hover {
+  background: rgba(125, 125, 125, 0.8);
+}
+
+button[type=submit] {
+  color: white;
+  background: #446e9b;
+}
+
+button[type=submit]:hover {
+  background: rgba(68, 110, 155, 0.8);
+}
+
+table, th, td {
+  border-width: 2px;
+  border-style: ridge;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  background: #446e9b;
+}
+
+td, th {
+  padding: 5px;
+  text-align: left;
+}
+
+.edit-button, .archive-button {
+  text-align: center;
+  width: 24px;
+}
+
+.no-results {
+  text-align: center;
+  font-weight: bold;
+}
+
+button.paging {
+  margin: 20px 0px 10px 0px;
+  width: 40px;
+  border-radius: 5px;
+  font-size: 14px;
+  padding: 5px;
+  background: white;
+  color: #446e9b;
+  border: 2px solid #446e9b;
+}
+
+button.paging.selected {
+  color: white;
+  background: #446e9b;
+}
+
+button.paging:hover {
+  color: white;
+  background: rgba(68, 110, 155, 0.8);
+}
+
+/*# sourceMappingURL=autoforms.css.map */
