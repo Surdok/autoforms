@@ -1,6 +1,10 @@
-# Autoforms v0.4.0
+# Autoforms v0.4.1
 
 Automatic form generation for basic table management.
+
+## Status
+
+In progress, not yet functional
 
 ## Installation
 

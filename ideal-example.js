@@ -15,14 +15,20 @@ const mysqlConfig = JSON.parse(fs.readFileSync(`mysql-config.json`));
 const db = new autoforms.MySQLConnection(mysqlConfig);
 
 /** Create auto form server object */
-const server = new autoforms.AutoFormServer();
+const server = new autoforms.AutoFormServer(db);
 
 /** Add one or more auto form configurations */
 server.addAutoForm({
-  path: `/items`,                 /** Required */
-  className: `Item`,              /** Required */
-  tableName: `items`,             /** Required */
+  path: `/discoveries`,           /** Required */
+  tableName: `discoveries`,       /** Required */
+  canAdd: true,                   /** Optional */
+  canEdit: true,                  /** Optional */
+  canArchive: true,               /** Optional */
+  addPermissions: [1],            /** Optional */
+  editPermissions: [1],           /** Optional */
+  archivePermissions: [1],        /** Optional */
   columns: [
+    /** Example int (number) column */
     {
       name: `revision`,           /** Required */
       type: `int`,                /** Required */
@@ -33,6 +39,7 @@ server.addAutoForm({
       validation: x => x >= 0,    /** Optional */
       validationMessage: `The revision number must be greater than zero.`     /** Optional */
     },
+    /** Example date (date) column */
     {
       name: `revisionDate`,
       type: `date`,
@@ -43,6 +50,7 @@ server.addAutoForm({
       validation: x => x.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/),
       validationMessage: `That revision date is not valid.`
     },
+    /** Example time (time) column */
     {
       name: `revisionTime`,
       type: `time`,
@@ -53,6 +61,7 @@ server.addAutoForm({
       validation: x => x.match(/[0-9]{4}:[0-9]{2}:[0-9]{2}/),
       validationMessage: `That revision time is not valid.`
     },
+    /** Example text (text) column */
     { 
       name: `name`,         
       type: `text`, 
@@ -65,19 +74,21 @@ server.addAutoForm({
       inputColumnsAfter: 4,       /** Optional */
       required: true
     },
+    /** Example textarea (textarea) column */
     { 
       name: `description`, 
       type: `textarea`, 
       maxLength: 256, 
       inputLabel: `Description:`,
       inputColumns: 16,
-      placeholder: `Please provide an item description...`,      /** Optional */
+      placeholder: `Please provide a description...`,      /** Optional */
     },
+    /** Example array of int (multi-select) column */
     { 
-      name: `flags`, 
+      name: `characteristics`, 
       type: `array`, 
       arrayOf: { type: `int` },   /** Required when 'type' is configured as 'array' */
-      inputType: `multiselect`,   /** Optional, defaults to checkboxes */
+      inputType: `multi-select`,  /** Optional, defaults to checkboxes */
       inputLabel: `Characteristics:`,
       inputColumns: 8,
       options: [                  /** Required when 'type' is configured as 'array' */
@@ -91,26 +102,30 @@ server.addAutoForm({
           selected: true          /** Optional, defaults to false */
         },
         { 
-          label: `Solid`, 
+          label: `Valuable`, 
           value: 3
         },
       ]
     },
+    /** Example color (color) column */
     {
       name: `color`,
       type: `color`,
       inputLabel: `Color:`,
       inputColumns: 4
     },
+    /** Example double (text) column */
     {
       name: `kilograms`,
       type: `double`,
       inputLabel: `Weight (kg):`,
       inputColumns: 4
     },
+    /** Example text (select) column */
     {
       name: `density`,
       type: `text`,
+      inputType: `select`,
       inputLabel: `Density:`,
       inputColumns: 6,
       inputColumnsAfter: 2,
@@ -125,10 +140,11 @@ server.addAutoForm({
         }
       ]
     },
+    /** Example checkboxes (checkbox) column */
     {
       name: `elements`,
       type: `array`,
-      arrayOf: `text`,
+      arrayOf: { type: `text`, maxLength: 2 },
       inputLabel: `Elements:`,
       inputColumns: 8,
       alignment: `vertical`,      /** Optional, defaults to horizontal */
@@ -155,6 +171,7 @@ server.addAutoForm({
         }
       ]
     },
+    /** Example email (email) column */
     {
       name: `discovererEmail`,
       type: `email`,
@@ -162,29 +179,78 @@ server.addAutoForm({
       inputColumns: 13,
       inputColumnsAfter: 3
     },
+    /** Example telephone (tel) column */
     {
       name: `discovererTelephone`,
-      type: `tel`,
+      type: `telephone`,
       inputLabel: `Discoverer's Telephone #:`,
       inputColumns: 10,
       inputColumnsAfter: 6
     },
+    /** Example url (url) column */
     {
       name: `url`,
       type: `url`,
       inputLabel: `Discoverer's URL:`,
       inputColumns: 16
     },
+    /** Example datetime (datetime) column */
     {
       name: `discoveredDateTime`,
       type: `datetime`,
+      list: true,
+      listHeader: `Discovered`,
+      listOrder: 3,
       inputLabel: `Date/time Discovered:`,
-      inputColumns: 10,
-      inputColumnsAfter: 6
+      inputColumns: 10
     },
+    /** Example radios (radios) column */
+    {
+      name: `continent`,
+      type: `int`,
+      list: true,
+      listHeader: `Continent`,
+      listOrder: 2,
+      inputType: `radios`,
+      inputLabel: `Continent:`,
+      inputColumns: 6,
+      alignment: `vertical`,
+      options: [
+        {
+          label: `Africa`,
+          value: 0
+        },
+        {
+          label: `Antarctica`,
+          value: 1
+        },
+        {
+          label: `Asia`,
+          value: 2
+        },
+        {
+          label: `Australia`,
+          value: 3
+        },
+        {
+          label: `Europe`,
+          value: 4
+        },
+        {
+          label: `North America`,
+          value: 5
+        },
+        {
+          label: `South America`,
+          value: 6
+        }
+      ]
+    },
+    /** Example file (file) column */
     {
       name: `picture`,
       type: `file`,
+      allowedExtensions: [`png`, `jpg`, `gif`],
       inputLabel: `Item Picture:`,
       inputColumns: 16
     }
