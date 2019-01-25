@@ -24,9 +24,14 @@ server.addAutoForm({
   canAdd: true,                   /** Optional */
   canEdit: true,                  /** Optional */
   canArchive: true,               /** Optional */
-  addPermissions: [1],            /** Optional */
-  editPermissions: [1],           /** Optional */
-  archivePermissions: [1],        /** Optional */
+  addPermission: 1,               /** Optional */
+  editPermission: 1,              /** Optional */
+  archivePermission: 1,           /** Optional */
+  headerTemplate: fs.readFileSync(`templates/header.ejs`),     /** Optional */
+  footerTemplate: fs.readFileSync(`templates/footer.ejs`),     /** Optional */
+  addTemplate: fs.readFileSync(`templates/add.ejs`),           /** Optional */
+  editTemplate: fs.readFileSync(`templates/edit.ejs`),         /** Optional */
+  listTemplate: fs.readFileSync(`templates/list.ejs`),         /** Optional */
   columns: [
     /** Example int (number) column */
     {
@@ -35,7 +40,8 @@ server.addAutoForm({
       inputLabel: `Revision #:`,  /** Optional, defaults to configured 'name' */
       inputColumns: 8,            /** Optional, defaults to 16 */
       required: true,             /** Optional, defaults to false */
-      min: 0,                     /** Optional, 'max' is also an optional property configuration option */
+      min: 0,                     /** Optional */
+      max: 999,                   /** Optional */
       validation: x => x >= 0,    /** Optional */
       validationMessage: `The revision number must be greater than zero.`     /** Optional */
     },
