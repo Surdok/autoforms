@@ -25,6 +25,7 @@
     "ezobjects-mysql": "^6.1.8",
     "eztables": "^0.4.1",
     "htmlspecialchars": "^1.0.5",
+    "moment": "^2.24.0",
     "session-file-store": "^1.2.0"
   }
 }
