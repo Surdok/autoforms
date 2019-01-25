@@ -5,7 +5,7 @@ const ezforms = require(`ezforms`);
 /** Require local modules */
 const models = require(`../models`);
 
-module.exports = (config) => {
+module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
       if ( !req.user )
@@ -19,7 +19,7 @@ module.exports = (config) => {
         if ( !(await obj.load(parseInt(req.body.id), req.db)) )
           throw new Error(`Unable to load record from database!`);
         
-        config.properties.forEach((property) => {
+        autoform.properties().forEach((property) => {
           if ( property.name == `id` || !property.editable )
             return;
           
@@ -48,7 +48,7 @@ module.exports = (config) => {
       /** Set form heading */
       form.heading().rank(1).text(`Edit Record`);
       
-      config.properties.forEach((property) => {
+      autoform.properties().forEach((property) => {
         if ( property.name == `id` || !property.editable )
           return;
         

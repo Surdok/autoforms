@@ -6,7 +6,7 @@ const eztables = require(`eztables`);
 /** Require local modules */
 const models = require(`../models`);
 
-module.exports = (config, objClass) => {
+module.exports = (autoform, objClass) => {
   return async (req, res, next) => {
     try {
       /** Capture or define offset */
@@ -17,7 +17,7 @@ module.exports = (config, objClass) => {
       let query = `SELECT SQL_CALC_FOUND_ROWS id, `;
 
       /** Identify ordered column properties */
-      const orderedColumnProperties = config.properties.filter(x => x.showInList && typeof x.columnOrder === `number`);
+      const orderedColumnProperties = autoform.properties().filter(x => x.showInList && typeof x.columnOrder === `number`);
 
       /** Sort ordered column properties by column order number */
       orderedColumnProperties.sort((a, b) => {
@@ -36,7 +36,7 @@ module.exports = (config, objClass) => {
       });
 
       /** Identify remaining non-ordered column properties */
-      const remainingColumnProperties = config.properties.filter(x => x.showInList && !orderedColumnProperties.includes(x));
+      const remainingColumnProperties = autoform.properties().filter(x => x.showInList && !orderedColumnProperties.includes(x));
 
       /** Add remaining non-ordered column properties to query */
       remainingColumnProperties.forEach((property) => {
@@ -48,10 +48,10 @@ module.exports = (config, objClass) => {
       query = query.substring(0, query.length - 2);
 
       /** Add FROM table name to query */
-      query += ` FROM ${config.tableName}`
+      query += ` FROM ${autoform.tableName()}`
 
       /** Identify list ordered properties */
-      const listOrderProperties = config.properties.filter(x => typeof x.listOrder === `number`);
+      const listOrderProperties = autoform.properties().filter(x => typeof x.listOrder === `number`);
 
       /** Sort properties by list order */
       listOrderProperties.sort((a, b) => {
@@ -63,7 +63,7 @@ module.exports = (config, objClass) => {
         return 0;
       });
 
-      if ( config.archivable )
+      if ( autoform.archivable() )
         query += ` WHERE archived = 0`;
       
       /** Add ORDER BY to query */
@@ -102,11 +102,11 @@ module.exports = (config, objClass) => {
       });
 
       /** If user is logged in and table is editable, add header placeholder for edit buttons */
-      if ( req.user && config.editable )
+      if ( req.user && autoform.editable() )
         table.header().text(`&nbsp;`);
 
       /** If user is logged in and table is archivable, add header placeholder for edit buttons */
-      if ( req.user && config.archivable )
+      if ( req.user && autoform.archivable() )
         table.header().text(`&nbsp;`);
 
       /** Start table body */
@@ -127,21 +127,21 @@ module.exports = (config, objClass) => {
         });
         
         /** If user is logged in and table is editable, add header placeholder for edit buttons */
-        if ( req.user && config.editable )
+        if ( req.user && autoform.editable() )
           table.editButton(row.id);
 
         /** If user is logged in and table is archivable, add header placeholder for edit buttons */
-        if ( req.user && config.archivable )
+        if ( req.user && autoform.archivable() )
           table.archiveButton(row.id);
       });
       
       if ( results.length == 0 ) {
         let colspan = orderedColumnProperties.length + remainingColumnProperties.length;
         
-        if ( req.user && config.editable )
+        if ( req.user && autoform.editable() )
           colspan++;
         
-        if ( req.user && config.archivable )
+        if ( req.user && autoform.archivable() )
           colspan++;
         
         table.row();

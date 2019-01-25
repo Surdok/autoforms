@@ -5,7 +5,7 @@ const ezforms = require(`ezforms`);
 /** Require local modules */
 const models = require(`../models`);
 
-module.exports = (config) => {
+module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
       if ( !req.user )
@@ -15,7 +15,7 @@ module.exports = (config) => {
       const obj = new req.objClass();
 
       if ( req.method == `POST` ) {
-        config.properties.forEach((property) => {
+        autoform.properties().forEach((property) => {
           if ( property.name == `id` || !property.editable )
             return;
           
@@ -37,7 +37,7 @@ module.exports = (config) => {
       /** Set form heading */
       form.heading().rank(1).text(`Add Record`);
       
-      config.properties.forEach((property) => {
+      autoform.properties().forEach((property) => {
         if ( property.name == `id` || !property.editable )
           return;
         
