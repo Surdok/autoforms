@@ -17,7 +17,48 @@ const db = new autoforms.MySQLConnection(mysqlConfig);
 /** Create auto form server object */
 const server = new autoforms.AutoFormServer(db);
 
-/** Add one or more auto form configurations */
+/** Grab express app if you want to do other stuff */
+const app = server.app();
+
+/** Interact with user accounts */
+const user = new autoforms.UserAccount();
+
+/** Three possible methods to add auto forms... */
+
+/** Method #1 */
+
+const autoform = new autoforms.AutoForm();
+
+autoform.path(`/discoveries`); 
+autoform.tableName(`discoveries`);  
+/** ... */
+autoform.columns().push({
+  name: `revision`,           /** Required */
+  type: `int`,                /** Required */
+  inputLabel: `Revision #:`,  /** Optional, defaults to configured 'name' */
+  inputColumns: 8,            /** Optional, defaults to 16 */
+  required: true,             /** Optional, defaults to false */
+  min: 0,                     /** Optional */
+  max: 999,                   /** Optional */
+  validation: x => x >= 0,    /** Optional */
+  validationMessage: `The revision number must be greater than zero.`     /** Optional */
+});
+/** Etc, etc with values like below... */
+
+server.addAutoForm(autoform);
+
+/** Method #2 */
+
+const autoform = new autoforms.AutoForm({
+  path: `/discoveries`,
+  tableName: `discoveries`,
+  /** Etc, etc with values like below... */
+});
+
+server.addAutoForm(autoform);
+
+/** Method #3 (and full example) */
+
 server.addAutoForm({
   path: `/discoveries`,           /** Required */
   tableName: `discoveries`,       /** Required */
