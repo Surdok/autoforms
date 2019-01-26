@@ -32,8 +32,8 @@ server.addAutoForm({
   addTemplate: `templates/add.ejs`,           /** Optional */
   editTemplate: `templates/edit.ejs`,         /** Optional */
   listTemplate: `templates/list.ejs`,         /** Optional */
-  columns: [
-    /** Example int (number) column */
+  properties: [
+    /** Example int (number) property */
     {
       name: `revision`,           /** Required */
       type: `int`,                /** Required */
@@ -45,7 +45,7 @@ server.addAutoForm({
       validation: x => x >= 0,    /** Optional */
       validationMessage: `The revision number must be greater than zero.`     /** Optional */
     },
-    /** Example date (date) column */
+    /** Example date (date) property */
     {
       name: `revisionDate`,
       type: `date`,
@@ -56,31 +56,33 @@ server.addAutoForm({
       validation: x => x.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/),
       validationMessage: `That revision date is not valid.`
     },
-    /** Example time (time) column */
+    /** Example time (time) property */
     {
       name: `revisionTime`,
       type: `time`,
       inputLabel: `Revision Time:`,
       inputColumns: 8,
+      inputColumnsAfter: 8,
       required: true,
       default: `12:00:00`,        /** Optional, defaults to browser default */
       validation: x => x.match(/[0-9]{4}:[0-9]{2}:[0-9]{2}/),
       validationMessage: `That revision time is not valid.`
     },
-    /** Example text (text) column */
+    /** Example text (text) property */
     { 
       name: `name`,         
       type: `text`, 
       maxLength: 32,              /** Optional, defaults to 64 */
       list: true,                 /** Required for at least one property */
       listHeader: `Name`,         /** Optional, defaults to configured 'name' */
-      listOrder: 1,               /** Optional, defaults to user programmed order in this 'columns' configuration array */
+      listOrder: 1,               /** Optional, defaults to user programmed order in this 'properties' configuration array */
+      sortOrder: 1,               /** Optional, defaults to default MySQL behavior */
       inputLabel: `Name:`,
       inputColumns: 12,
       inputColumnsAfter: 4,       /** Optional */
       required: true
     },
-    /** Example textarea (textarea) column */
+    /** Example textarea (textarea) property */
     { 
       name: `description`, 
       type: `textarea`, 
@@ -89,12 +91,12 @@ server.addAutoForm({
       inputColumns: 16,
       placeholder: `Please provide a description...`,      /** Optional */
     },
-    /** Example array of int (multi-select) column */
+    /** Example array of int (multi-select) property */
     { 
       name: `characteristics`, 
       type: `array`, 
       arrayOf: { type: `int` },   /** Required when 'type' is configured as 'array' */
-      inputType: `multi-select`,  /** Optional, defaults to checkboxes */
+      inputType: `multi-select`,  /** Optional, defaults to 'checkboxes' when 'type' is configured as 'array' */
       inputLabel: `Characteristics:`,
       inputColumns: 8,
       options: [                  /** Required when 'type' is configured as 'array' */
@@ -113,25 +115,24 @@ server.addAutoForm({
         },
       ]
     },
-    /** Example color (color) column */
+    /** Example color (color) property */
     {
       name: `color`,
       type: `color`,
       inputLabel: `Color:`,
       inputColumns: 4
     },
-    /** Example double (text) column */
+    /** Example double (text) property */
     {
       name: `kilograms`,
       type: `double`,
       inputLabel: `Weight (kg):`,
       inputColumns: 4
     },
-    /** Example text (select) column */
+    /** Example text (select) property */
     {
       name: `density`,
       type: `text`,
-      inputType: `select`,
       inputLabel: `Density:`,
       inputColumns: 6,
       inputColumnsAfter: 2,
@@ -146,7 +147,7 @@ server.addAutoForm({
         }
       ]
     },
-    /** Example checkboxes (checkbox) column */
+    /** Example checkboxes (checkbox) property */
     {
       name: `elements`,
       type: `array`,
@@ -177,7 +178,7 @@ server.addAutoForm({
         }
       ]
     },
-    /** Example email (email) column */
+    /** Example email (email) property */
     {
       name: `discovererEmail`,
       type: `email`,
@@ -185,7 +186,7 @@ server.addAutoForm({
       inputColumns: 13,
       inputColumnsAfter: 3
     },
-    /** Example telephone (tel) column */
+    /** Example telephone (tel) property */
     {
       name: `discovererTelephone`,
       type: `telephone`,
@@ -193,14 +194,14 @@ server.addAutoForm({
       inputColumns: 10,
       inputColumnsAfter: 6
     },
-    /** Example url (url) column */
+    /** Example url (url) property */
     {
       name: `url`,
       type: `url`,
       inputLabel: `Discoverer's URL:`,
       inputColumns: 16
     },
-    /** Example datetime (datetime) column */
+    /** Example datetime (datetime) property */
     {
       name: `discoveredDateTime`,
       type: `datetime`,
@@ -210,14 +211,14 @@ server.addAutoForm({
       inputLabel: `Date/time Discovered:`,
       inputColumns: 10
     },
-    /** Example radios (radios) column */
+    /** Example radios (radios) property */
     {
       name: `continent`,
       type: `int`,
       list: true,
       listHeader: `Continent`,
       listOrder: 2,
-      inputType: `radios`,
+      inputType: `radios`, /** Optional, defaults to 'select' when 'type' is *not* configured as 'array' */
       inputLabel: `Continent:`,
       inputColumns: 6,
       alignment: `vertical`,
@@ -252,7 +253,7 @@ server.addAutoForm({
         }
       ]
     },
-    /** Example file (file) column */
+    /** Example file (file) property */
     {
       name: `picture`,
       type: `file`,

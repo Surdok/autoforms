@@ -16,32 +16,32 @@ module.exports = (autoform, objClass) => {
       /** Begin SELECT query */
       let query = `SELECT SQL_CALC_FOUND_ROWS id, `;
 
-      /** Identify ordered column properties */
-      const orderedColumnProperties = autoform.properties().filter(x => x.showInList && typeof x.columnOrder === `number`);
+      /** Identify ordered list properties */
+      const orderedListProperties = autoform.properties().filter(x => x.list() && typeof x.listOrder() === `number`);
 
-      /** Sort ordered column properties by column order number */
-      orderedColumnProperties.sort((a, b) => {
-        if ( a.columnOrder < b.columnOrder )
+      /** Sort ordered list properties by list order number */
+      orderedListProperties.sort((a, b) => {
+        if ( a.listOrder() < b.listOrder() )
           return -1;
-        else if ( a.columnOrder > b.columnOrder )
+        else if ( a.listOrder() > b.listOrder() )
           return 1;
 
         return 0;
       });
 
-      /** Add ordered column properties to query */
-      orderedColumnProperties.forEach((property) => {
-        if ( property.showInList )
-          query += `${property.name}, `;
+      /** Add ordered list properties to query */
+      orderedListProperties.forEach((property) => {
+        if ( property.list() )
+          query += `${property.name()}, `;
       });
 
-      /** Identify remaining non-ordered column properties */
-      const remainingColumnProperties = autoform.properties().filter(x => x.showInList && !orderedColumnProperties.includes(x));
+      /** Identify remaining non-ordered list properties */
+      const remainingListProperties = autoform.properties().filter(x => x.list() && !orderedListProperties.includes(x));
 
-      /** Add remaining non-ordered column properties to query */
-      remainingColumnProperties.forEach((property) => {
-        if ( property.showInList )
-          query += `${property.name}, `;
+      /** Add remaining non-ordered list properties to query */
+      remainingListProperties.forEach((property) => {
+        if ( property.list() )
+          query += `${property.name()}, `;
       });
 
       /** Remove trailing ', ' */
@@ -50,28 +50,28 @@ module.exports = (autoform, objClass) => {
       /** Add FROM table name to query */
       query += ` FROM ${autoform.tableName()}`
 
-      /** Identify list ordered properties */
-      const listOrderProperties = autoform.properties().filter(x => typeof x.listOrder === `number`);
-
-      /** Sort properties by list order */
-      listOrderProperties.sort((a, b) => {
-        if ( a.listOrder < b.listOrder )
-          return -1;
-        else if ( a.listOrder > b.listOrder )
-          return 1;
-
-        return 0;
-      });
-
-      if ( autoform.archivable() )
+      if ( autoform.canArchive() )
         query += ` WHERE archived = 0`;
       
       /** Add ORDER BY to query */
       query += ` ORDER BY `;
 
+      /** Identify sort ordered properties */
+      const sortOrderProperties = autoform.properties().filter(x => typeof x.sortOrder() === `number`);
+
+      /** Sort properties by list order */
+      sortOrderProperties.sort((a, b) => {
+        if ( a.sortOrder() < b.sortOrder() )
+          return -1;
+        else if ( a.sortOrder() > b.sortOrder() )
+          return 1;
+
+        return 0;
+      });
+      
       /** Add list ordered fields to query */
-      listOrderProperties.forEach((property) => {
-        query += `${property.name}, `;
+      sortOrderProperties.forEach((property) => {
+        query += `${property.name()}, `;
       });
 
       /** Remove trailing ', ' */
@@ -92,21 +92,21 @@ module.exports = (autoform, objClass) => {
       table.row();
 
       /** Add ordered list headers */
-      orderedColumnProperties.forEach((property) => {
-        table.header().text(property.listHeader);
+      orderedListProperties.forEach((property) => {
+        table.header().text(property.listHeader());
       });
 
       /** Add remaining non-ordered list headers */
-      remainingColumnProperties.forEach((property) => {
-        table.header().text(property.listHeader);
+      remainingListProperties.forEach((property) => {
+        table.header().text(property.listHeader());
       });
 
       /** If user is logged in and table is editable, add header placeholder for edit buttons */
-      if ( req.user && autoform.editable() )
+      if ( req.user && ( autoforms.editPermission() == -1 || req.user.permissions().includes(autoforms.editPermission()) ) && autoform.canEdit() )
         table.header().text(`&nbsp;`);
 
       /** If user is logged in and table is archivable, add header placeholder for edit buttons */
-      if ( req.user && autoform.archivable() )
+      if ( req.user && autoform.canArchive() )
         table.header().text(`&nbsp;`);
 
       /** Start table body */
@@ -119,7 +119,7 @@ module.exports = (autoform, objClass) => {
 
         /** Loop through each column of this search result row */
         Object.keys(row).forEach((key) => {
-          if ( key == `id` && !orderedColumnProperties.find(x => x.name == `id`) && !remainingColumnProperties.find(x => x.name == `id`) )
+          if ( key == `id` && !orderedListProperties.find(x => x.name() == `id`) && !remainingListProperties.find(x => x.name() == `id`) )
             return;
           
           /** Add table data for column value */
@@ -127,47 +127,71 @@ module.exports = (autoform, objClass) => {
         });
         
         /** If user is logged in and table is editable, add header placeholder for edit buttons */
-        if ( req.user && autoform.editable() )
+        if ( req.user && autoform.canEdit() )
           table.editButton(row.id);
 
         /** If user is logged in and table is archivable, add header placeholder for edit buttons */
-        if ( req.user && autoform.archivable() )
+        if ( req.user && autoform.canArchive() )
           table.archiveButton(row.id);
       });
       
+      /** If there are no results... */
       if ( results.length == 0 ) {
-        let colspan = orderedColumnProperties.length + remainingColumnProperties.length;
+        /** Figure out how many columns to span for a full width table cell */
+        let colspan = orderedListProperties.length + remainingListProperties.length;
         
-        if ( req.user && autoform.editable() )
+        /** Be sure to add a column for the edit icon, if needed */
+        if ( req.user && autoform.canEdit() )
           colspan++;
         
-        if ( req.user && autoform.archivable() )
+        /** Be sure to add a column for the archive icon, if needed */
+        if ( req.user && autoform.canArchive() )
           colspan++;
         
+        /** Output row with full width cell indicating no records found */
         table.row();
         table.data().colspan(colspan).addClass(`no-results`).text(`There were no records in the database.`);
       }
 
+      /** Query the total number of rows the previous query would pull without the limit */
       const count = await req.db.query(`SELECT FOUND_ROWS() numRows`);
       
+      /** Calculate the total number of pages required to show all records in the database */
       const numPages = Math.ceil(count[0].numRows / numRows);
+      
+      /** Calculate current page number */
       const currentPage = offset / numRows + 1;
 
+      /** Define some variables for list paging */
       let startPage = currentPage;
       let finishPage = currentPage;
       let numButtons = 1;
       let which = 1;
       let pagingMarkup = ``;
 
+      /** 
+       * There could be 200 pages, so let's limit ourselves to 9 page numbers and distribute
+       * the page number button around the current page evenly, except when up against the
+       * first or last page.  We'll do this by looping until numButtons gets to 9...
+       */
       while ( numButtons < 9 ) {
+        /** If it's time for a previous page button, add it */
         if ( which == 1 && startPage - 1 >= 1 ) {
           numButtons++;
           startPage--;
-        } else if ( which == 2 && finishPage + 1 <= numPages ) {
+        } 
+        
+        /** Otherwise, if it's time for a next page button, add it */
+        else if ( which == 2 && finishPage + 1 <= numPages ) {
           numButtons++;
           finishPage++;
         }
 
+        /** 
+         * Alternate whether to add a previous or next page button next time, if possible, and
+         * break out of the loop if there are less than 9 pages in total and all buttons have
+         * been distributed.
+         */
         if ( which == 1 && finishPage + 1 <= numPages )
           which = 2;
         else if ( which == 2 && startPage - 1 >= 1 )
@@ -176,29 +200,37 @@ module.exports = (autoform, objClass) => {
           break;
       }
       
+      /** If this isn't the first page, add a 'far left' button */
       if ( offset != 0 )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${Math.max(0, offset - numRows * 10)}';">&lt;&lt;</button>\n`;
 
-      if ( offset - numRows >= 0 )
+      /** If this isn't the first page, add a 'previous' button */
+      if ( offset != 0 )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${offset - numRows}';">&lt;</button>\n`;
       
+      /** Loop from the identified start page number to identified finish page number */
       for ( let i = startPage; i <= finishPage; i++ ) {
+        /** If it's the current page's button, output button with special 'selected' class */
         if ( currentPage == i )
           pagingMarkup += `<button class='paging selected' type='button' onclick="javascript:location='list?offset=${(i - 1) * numRows}';">${i}</button>\n`;
+        
+        /** Otherwise, just output button */
         else
           pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${(i - 1) * numRows}';">${i}</button>\n`;
       }
       
-      if ( offset + numRows < count[0].numRows )
+      /** If this isn't the last page, add a 'next' button */
+      if ( offset != (numPages - 1) * numRows )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${offset + numRows}';">&gt;</button>\n`;
       
+      /** If this isn't the last page, add a 'far ahead' button */
       if ( offset != (numPages - 1) * numRows )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}';">&gt;&gt;</button>\n`;
 
       /** Render EJS template with our rendered form */
       req.markup += ejs.render(req.listTemplate, { content: table.render(6), paging: pagingMarkup });
     } catch ( err ) {
-      req.log(err);
+      console.log(err);
     } finally {
       await req.db.close();
     }

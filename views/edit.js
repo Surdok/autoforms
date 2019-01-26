@@ -8,66 +8,81 @@ const models = require(`../models`);
 module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
-      if ( !req.user )
-        throw new Error(`You are not authorized to edit records!`);
-
-      /** Create instance of object class */
-      const obj = new req.objClass();
-
-      if ( req.method == `POST` ) {
-        /** Attempt to load object by id */
-        if ( !(await obj.load(parseInt(req.body.id), req.db)) )
-          throw new Error(`Unable to load record from database!`);
+      /** If not logged, can't add records */
+      if ( !req.user ) {
+        /** Redirect to login */
+        res.redirect(`login?return=edit`);
         
-        autoform.properties().forEach((property) => {
-          if ( property.name == `id` || !property.editable )
-            return;
-          
-          obj[property.name](req.body[property.name]);
-        });
-        
-        await obj.update(req.db);
-        
-        res.redirect(`list`);
-        
+        /** We're done */
         return;
       }
       
-      /** Attempt to load object by id */
-      if ( !(await obj.load(parseInt(req.query.id), req.db)) )
-        throw new Error(`Unable to load record from database!`);
+      /** If method is POST, process added record */
+      if ( req.method == `POST` ) {
+        /** Create record */
+        const record = new autoform.Record();
+        
+        /** Load record */
+        const result = await record.load(req.body.id, req.db);
+        
+        if ( !result )
+          throw new ReferenceError(`views.edit(): No record exists with that id number.`);
+        
+        /** Loop through each autoform property... */
+        autoform.properties().forEach((property) => {
+          /** If the property is the id property or is not editable, skip */
+          if ( property.name() == `id` || !property.canEdit() )
+            return;
+          
+          /** Set record property */
+          record[property.name()](req.body[property.name()]);
+        });
+        
+        /** Insert record into database */
+        await record.update(req.db);
+        
+        /** Redirect to list */
+        res.redirect(`list`);
+        
+        /** We're done */
+        return;
+      }
       
       /** Create new EZ form */
       const form = new ezforms.Form();
       
-      /** Set form action and method */
+      /** Set form action to this page */
       form.action(`edit`);
-      form.method(`POST`);
-      form.hidden().name(`id`).value(req.htmlescape(req.query.id));
       
-      /** Set form heading */
+      /** Set form method to POST */
+      form.method(`POST`);
+      
+      /** Add form heading */
       form.heading().rank(1).text(`Edit Record`);
       
+      /** Loop through each of the auto form's properties */
       autoform.properties().forEach((property) => {
-        if ( property.name == `id` || !property.editable )
+        /** If the property is the id property or is not editable, skip */
+        if ( property.name() == `id` || !property.canEdit() )
           return;
         
-        if ( property.type == `varchar` ) {
-          form.text().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).pattern(property.pattern).value(obj[property.name]()).required(property.required);
-        } else if ( property.type == `boolean` ) {
-          form.radios().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).required(property.required);
-          form.option().value(1).text(`Yes`).selected(obj[property.name]() == 1);
-          form.option().value(0).text(`No`).selected(obj[property.name]() == 0);
-        }
+        /** If property type is 'text'... */
+        if ( property.type() == `text` )
+          form.text().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name]()).required(property.required()).disabled(property.disabled());
+        
+        /** Otherwise, if the property type is 'int'... */
+        else if ( property.type() == `int` )
+          form.number().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name]()).required(property.required()).disabled(property.disabled());
       });
       
+      /** Add cancel and save buttons */
       form.button().cols(6).colsBefore(2).type(`button`).text(`Cancel`);
       form.button().cols(6).colsAfter(2).type(`submit`).text(`Save`);
       
-      /** Render EJS template with our rendered form */
-      req.markup += ejs.render(req.editTemplate, { content: form.render(6) });
+      /** Render template with our form */
+      req.markup += ejs.render(req.addTemplate, { content: form.render() });
     } catch ( err ) {
-      req.log(err);
+      console.log(err);
     } finally {
       await req.db.close();
     }

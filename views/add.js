@@ -8,55 +8,75 @@ const models = require(`../models`);
 module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
-      if ( !req.user )
-        throw new Error(`You are not authorized to add records!`);
+      /** If not logged, can't add records */
+      if ( !req.user ) {
+        /** Redirect to login */
+        res.redirect(`login?return=add`);
+        
+        /** We're done */
+        return;
+      }
 
-      /** Create instance of object class */
-      const obj = new req.objClass();
-
+      /** If method is POST, process added record */
       if ( req.method == `POST` ) {
+        /** Create record */
+        const record = new autoform.Record();
+        
+        /** Loop through each autoform property... */
         autoform.properties().forEach((property) => {
-          if ( property.name == `id` || !property.editable )
+          /** If the property is the id property or is not editable, skip */
+          if ( property.name() == `id` || !property.canEdit() )
             return;
           
-          obj[property.name](req.body[property.name]);
+          /** Set record property */
+          record[property.name()](req.body[property.name()]);
         });
         
-        await obj.insert(req.db);
+        /** Insert record into database */
+        await record.insert(req.db);
         
+        /** Redirect to list */
         res.redirect(`list`);
+        
+        /** We're done */
+        return;
       }
       
       /** Create new EZ form */
       const form = new ezforms.Form();
       
-      /** Set form action and method */
+      /** Set form action to this page */
       form.action(`add`);
+      
+      /** Set form method to POST */
       form.method(`POST`);
       
-      /** Set form heading */
+      /** Add form heading */
       form.heading().rank(1).text(`Add Record`);
       
+      /** Loop through each of the auto form's properties */
       autoform.properties().forEach((property) => {
-        if ( property.name == `id` || !property.editable )
+        /** If the property is the id property or is not editable, skip */
+        if ( property.name() == `id` || !property.canEdit() )
           return;
         
-        if ( property.type == `varchar` ) {
-          form.text().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).pattern(property.pattern).value(obj[property.name]()).required(property.required);
-        } else if ( property.type == `boolean` ) {
-          form.radios().colsBefore(property.colsBefore).cols(property.cols).colsAfter(property.colsAfter).name(property.name).label(property.formLabel).required(property.required);
-          form.option().value(1).text(`Yes`);
-          form.option().value(0).text(`No`).selected(true);
-        }
+        /** If property type is 'text'... */
+        if ( property.type() == `text` )
+          form.text().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name]()).required(property.required()).disabled(property.disabled());
+        
+        /** Otherwise, if the property type is 'int'... */
+        else if ( property.type() == `int` )
+          form.number().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name]()).required(property.required()).disabled(property.disabled());
       });
       
+      /** Add cancel and save buttons */
       form.button().cols(6).colsBefore(2).type(`button`).text(`Cancel`);
       form.button().cols(6).colsAfter(2).type(`submit`).text(`Save`);
       
-      /** Render EJS template with our rendered form */
-      req.markup += ejs.render(req.addTemplate, { content: form.render(6) });
+      /** Render template with our form */
+      req.markup += ejs.render(req.addTemplate, { content: form.render() });
     } catch ( err ) {
-      req.log(err);
+      console.log(err);
     } finally {
       await req.db.close();
     }

@@ -13,7 +13,7 @@ const url = require(`url`);
 const models = require(`./index`);
 const views = require(`../views`);
 
-/** Configure AutoFormServer EZ Object */
+/** Configure AutoFormServer class */
 const configAutoFormServer = {
   className: `AutoFormServer`,
   properties: [
@@ -28,13 +28,14 @@ ezobjects.createClass(configAutoFormServer);
 
 /** Replace init() method with more elaborate initialization */
 AutoFormServer.prototype.init = function (db = null) {
+  /** Initialize autoforms array */
+  this.autoforms([]);
+  
   /** Store db */
   this.db(db);
   
   const app = express();
-  
-  console.log(app.constructor.name);
-  
+    
   /** Create express app and store */
   this.app(app);
   
@@ -130,38 +131,34 @@ AutoFormServer.prototype.init = function (db = null) {
   });
 };
 
-AutoFormServer.prototype.generateAutoFormObject = function (autoform) {
-  /** Configure EZ object for this auto form */
-  const objConfig = {
-    className: autoform.className() || `AutoFormObject`,
-    tableName: autoform.tableName(),
-    properties: []
-  };
-  
-  /** Convert auto form column configurations to EZ object property configurations */
-  autoform.columns().forEach((column) => {
-  });
-  
-  /** Create EZ object for this auto form */
-  ezobjects.createClass(objConfig);
-  
-  /** Set EZ object in auto form */
-  autoform.ezobject(global[objConfig.classname]);
-};
-
 /** Create method for adding auto form configurations */
 AutoFormServer.prototype.addAutoForm = function (config) {
-  /** Validate auto form configuration */
-  this.validateAutoFormConfig(config);
+  /** Create array to store auto form property objects */
+  const properties = [];
+    
+  /** Loop through each property in the auto form configuration... */
+  config.properties.forEach((propertyConfig) => {
+    /** Create new auto form property instance */
+    const property = new models.AutoFormProperty(propertyConfig);
+    
+    /** Add property to array */
+    properties.push(property);
+  });
+  
+  /** Overwrite properties in config with array of auto form properties */
+  config.properties = properties;
   
   /** Create auto form */
   const autoform = new models.AutoForm(config);
+
+  /** Validate auto form */
+  autoform.validate();
+  
+  /** Generate record class */
+  autoform.generateClass(autoform);
   
   /** Add auto form to array */
   this.autoforms().push(autoform);
-  
-  /** Create auto form EZ object */
-  this.generateAutoFormObject(autoform);
   
   /** Create router for this auto form */
   const router = express.Router();
@@ -179,7 +176,6 @@ AutoFormServer.prototype.addAutoForm = function (config) {
     req.addTemplate = config.editTemplate || fs.readFileSync(__dirname + `/templates/add.ejs`).toString();
     req.editTemplate = config.editTemplate || fs.readFileSync(__dirname + `/templates/edit.ejs`).toString();
     req.listTemplate = config.listTemplate || fs.readFileSync(__dirname + `/templates/list.ejs`).toString();
-    req.objClass = objClass;
     
     /** Call next express route or middleware */
     next();
@@ -193,7 +189,7 @@ AutoFormServer.prototype.addAutoForm = function (config) {
   
   /** Output footer */
   router.use((req, res, next) => {
-    req.markup += ejs.render(autoform.headerTemplate());
+    req.markup += ejs.render(autoform.footerTemplate());
     
     res.send(req.markup);
   });
@@ -207,5 +203,5 @@ AutoFormServer.prototype.listen = function (port, cb) {
   this.app().listen(port, cb);
 };
 
-/** Export auto form server class */
+/** Export AutoFormServer class */
 module.exports.AutoFormServer = AutoFormServer;
