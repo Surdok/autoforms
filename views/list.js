@@ -2,6 +2,7 @@
 const ejs = require(`ejs`);
 const ezforms = require(`ezforms`);
 const eztables = require(`eztables`);
+const moment = require(`moment`);
 
 /** Require local modules */
 const models = require(`../models`);
@@ -102,7 +103,7 @@ module.exports = (autoform, objClass) => {
       });
 
       /** If user is logged in and table is editable, add header placeholder for edit buttons */
-      if ( req.user && ( autoforms.editPermission() == -1 || req.user.permissions().includes(autoforms.editPermission()) ) && autoform.canEdit() )
+      if ( req.user && ( autoform.editPermission() == -1 || req.user.permissions().includes(autoform.editPermission()) ) && autoform.canEdit() )
         table.header().text(`&nbsp;`);
 
       /** If user is logged in and table is archivable, add header placeholder for edit buttons */
@@ -123,7 +124,10 @@ module.exports = (autoform, objClass) => {
             return;
           
           /** Add table data for column value */
-          table.data().text(row[key]);
+          if ( typeof row[key] === `object` && row[key].constructor.name == `Date` )
+            table.data().text(moment(row[key]).format(`MM-DD-Y`));
+          else
+            table.data().text(row[key]);
         });
         
         /** If user is logged in and table is editable, add header placeholder for edit buttons */
@@ -158,7 +162,7 @@ module.exports = (autoform, objClass) => {
       
       /** Calculate the total number of pages required to show all records in the database */
       const numPages = Math.ceil(count[0].numRows / numRows);
-      
+            
       /** Calculate current page number */
       const currentPage = offset / numRows + 1;
 
@@ -201,11 +205,11 @@ module.exports = (autoform, objClass) => {
       }
       
       /** If this isn't the first page, add a 'far left' button */
-      if ( offset != 0 )
+      if ( offset - 15 >= 0 )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${Math.max(0, offset - numRows * 10)}';">&lt;&lt;</button>\n`;
 
       /** If this isn't the first page, add a 'previous' button */
-      if ( offset != 0 )
+      if ( offset - 15 >= 0 )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${offset - numRows}';">&lt;</button>\n`;
       
       /** Loop from the identified start page number to identified finish page number */
@@ -220,15 +224,15 @@ module.exports = (autoform, objClass) => {
       }
       
       /** If this isn't the last page, add a 'next' button */
-      if ( offset != (numPages - 1) * numRows )
+      if ( offset + numRows <  count[0].numRows )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${offset + numRows}';">&gt;</button>\n`;
       
       /** If this isn't the last page, add a 'far ahead' button */
-      if ( offset != (numPages - 1) * numRows )
+      if ( offset + numRows <  count[0].numRows )
         pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}';">&gt;&gt;</button>\n`;
 
       /** Render EJS template with our rendered form */
-      req.markup += ejs.render(req.listTemplate, { content: table.render(6), paging: pagingMarkup });
+      req.markup += ejs.render(autoform.listTemplate(), { content: table.render(6), paging: pagingMarkup });
     } catch ( err ) {
       console.log(err);
     } finally {

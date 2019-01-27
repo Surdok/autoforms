@@ -4,7 +4,7 @@ const ezobjects = require(`ezobjects-mysql`);
 
 /** Configure User class */
 const configUser = {
-  tableName: `users`,
+  tableName: `autoform_users`,
   className: `User`,
   otherSearchField: `username`,
   properties: [
@@ -37,5 +37,6 @@ User.prototype.hash = function (arg) {
   return hash.digest(`hex`);
 };
 
-/** Export User class */
+/** Export User config and class */
+module.exports.configUser = configUser;
 module.exports.User = User;

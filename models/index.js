@@ -7,3 +7,5 @@ module.exports.AutoFormProperty = autoFormProperty.AutoFormProperty;
 module.exports.AutoFormServer = autoFormServer.AutoFormServer;
 module.exports.AutoForm = autoForm.AutoForm;
 module.exports.User = user.User;
+
+module.exports.configUser = user.configUser;

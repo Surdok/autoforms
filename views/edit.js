@@ -48,6 +48,15 @@ module.exports = (autoform) => {
         return;
       }
       
+      /** Create record */
+      const record = new autoform.Record();
+
+      /** Load record */
+      const result = await record.load(parseInt(req.query.id), req.db);
+
+      if ( !result )
+        throw new ReferenceError(`views.edit(): No record exists with that id number.`);
+
       /** Create new EZ form */
       const form = new ezforms.Form();
       
@@ -68,11 +77,11 @@ module.exports = (autoform) => {
         
         /** If property type is 'text'... */
         if ( property.type() == `text` )
-          form.text().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name]()).required(property.required()).disabled(property.disabled());
+          form.text().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
         
         /** Otherwise, if the property type is 'int'... */
         else if ( property.type() == `int` )
-          form.number().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name]()).required(property.required()).disabled(property.disabled());
+          form.number().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
       });
       
       /** Add cancel and save buttons */
@@ -80,7 +89,7 @@ module.exports = (autoform) => {
       form.button().cols(6).colsAfter(2).type(`submit`).text(`Save`);
       
       /** Render template with our form */
-      req.markup += ejs.render(req.addTemplate, { content: form.render() });
+      req.markup += ejs.render(autoform.editTemplate(), { content: form.render() });
     } catch ( err ) {
       console.log(err);
     } finally {

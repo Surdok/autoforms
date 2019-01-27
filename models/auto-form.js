@@ -1,6 +1,7 @@
 /** Require external modules */
 const ezobjects = require(`ezobjects-mysql`);
 const fs = require(`fs`);
+const path = require(`path`);
 
 /** Configure AutoForm class */
 const configAutoForm = {
@@ -14,11 +15,14 @@ const configAutoForm = {
     { name: `addPermission`, type: `int`, default: -1 },
     { name: `editPermission`, type: `int`, default: -1 },
     { name: `archivePermission`, type: `int`, default: -1 },
-    { name: `headerTemplate`, type: `text`, setTransform: x => fs.readFileSync(x).toString() },
-    { name: `footerTemplate`, type: `text`, setTransform: x => fs.readFileSync(x).toString() },
-    { name: `addTemplate`, type: `text`, setTransform: x => fs.readFileSync(x).toString() },
-    { name: `editTemplate`, type: `text`, setTransform: x => fs.readFileSync(x).toString() },
-    { name: `listTemplate`, type: `text`, setTransform: x => fs.readFileSync(x).toString() },
+    { name: `headerTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `footerTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `addTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `editTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `listTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `loginTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `createTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `configRecord`, type: `object` },
     { name: `properties`, type: `array`, arrayOf: { instanceOf: `AutoFormProperty` } }
   ]
 };
@@ -57,6 +61,34 @@ AutoForm.prototype.validate = function () {
   if ( this.archivePermission() < -1 )
     throw new RangeError(`AutoForm.validate(): Invalid 'archivePermission', must be integer value greater than zero.`);
   
+  /** Validate addTemplate */
+  if ( this.addTemplate() == `` )
+    this.addTemplate(path.resolve(__dirname + `/../templates/add.ejs`));
+  
+  /** Validate editTemplate */
+  if ( this.editTemplate() == `` )
+    this.editTemplate(path.resolve(__dirname + `/../templates/edit.ejs`));
+  
+  /** Validate listTemplate */
+  if ( this.listTemplate() == `` )
+    this.listTemplate(path.resolve(__dirname + `/../templates/list.ejs`));
+  
+  /** Validate loginTemplate */
+  if ( this.loginTemplate() == `` )
+    this.loginTemplate(path.resolve(__dirname + `/../templates/login.ejs`));
+  
+  /** Validate createTemplate */
+  if ( this.createTemplate() == `` )
+    this.createTemplate(path.resolve(__dirname + `/../templates/create.ejs`));
+  
+  /** Validate headerTemplate */
+  if ( this.headerTemplate() == `` )
+    this.headerTemplate(path.resolve(__dirname + `/../templates/header.ejs`));
+  
+  /** Validate addTemplate */
+  if ( this.footerTemplate() == `` )
+    this.footerTemplate(path.resolve(__dirname + `/../templates/footer.ejs`));
+  
   /** Validate properties */
   if ( this.properties().length == 0 )
     throw new ReferenceError(`AutoFormProperty.validate(): There are no 'properties' configured for this form.`);
@@ -69,11 +101,16 @@ AutoForm.prototype.validate = function () {
 AutoForm.prototype.generateClass = function () {
   /** Configure record class */
   const configRecord = {
+    tableName: this.tableName(),
     className: this.tableName(),
     properties: [
       { name: `id`, type: `int` }
     ]
   };
+
+  /** If record can be archived, add column to track that */
+  if ( this.canArchive() )
+    configRecord.properties.push({ name: `archived`, type: `boolean` });
   
   /** Configure record properties based on auto form properties */
   this.properties().forEach((property) => {
@@ -101,12 +138,17 @@ AutoForm.prototype.generateClass = function () {
       configRecord.properties.push({ name: property.name(), type: `varchar`, length: property.maxLength() });
     else if ( property.type() == `file` )
       configRecord.properties.push({ name: property.name(), type: `tinytext` });
+    else if ( property.type() == `array` && [`int`, `double`].includes(property.arrayOf().type) )
+      configRecord.properties.push({ name: property.name(), type: `array`, arrayOf: property.arrayOf() });
+    else if ( property.type() == `array` && property.arrayOf().type == `text` )
+      configRecord.properties.push({ name: property.name(), type: `array`, arrayOf: { type: `varchar`, length: property.arrayOf().maxLength } });
   });
   
   /** Create record class */
   ezobjects.createClass(configRecord);
   
-  /** Save record class to auto form */
+  /** Save record config and class to auto form */
+  this.configRecord(configRecord);
   this.Record = global[this.tableName()];
 };
   

@@ -17,6 +17,10 @@ const db = new autoforms.MySQLConnection(mysqlConfig);
 /** Create auto form server object */
 const server = new autoforms.AutoFormServer(db);
 
+process.on('unhandledRejection', err => {
+  console.log(err);
+});
+
 /** Add auto form configuration */
 server.addAutoForm({
   path: `/discoveries`,           /** Required */
@@ -27,11 +31,6 @@ server.addAutoForm({
   addPermission: 1,               /** Optional */
   editPermission: 1,              /** Optional */
   archivePermission: 1,           /** Optional */
-  headerTemplate: `templates/header.ejs`,     /** Optional */
-  footerTemplate: `templates/footer.ejs`,     /** Optional */
-  addTemplate: `templates/add.ejs`,           /** Optional */
-  editTemplate: `templates/edit.ejs`,         /** Optional */
-  listTemplate: `templates/list.ejs`,         /** Optional */
   properties: [
     /** Example int (number) property */
     {
@@ -264,7 +263,13 @@ server.addAutoForm({
   ]
 });
 
-/** Start server on configured port */
-server.listen(port, () => {
+/** Use self-executing asynchronous function so we can await database table creation */
+(async () => {
+  /** Create database tables if they don't already exist */
+  await server.createTables();
+
+  /** Start server on configured port */
+  await server.listen(port);
+  
   console.log(`AutoForm Server up and running on port ${port}!`);
-});
+})();
