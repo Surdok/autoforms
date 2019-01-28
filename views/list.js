@@ -52,7 +52,7 @@ module.exports = (autoform, objClass) => {
       query += ` FROM ${autoform.tableName()}`
 
       if ( autoform.canArchive() )
-        query += ` WHERE archived = 0`;
+        query += ` WHERE active = 0`;
       
       /** Add ORDER BY to query */
       query += ` ORDER BY `;

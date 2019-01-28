@@ -4,12 +4,12 @@ const ezobjects = require(`ezobjects-mysql`);
 
 /** Configure User class */
 const configUser = {
-  tableName: `autoform_users`,
+  tableName: `users`,
   className: `User`,
   otherSearchField: `username`,
   properties: [
     { name: `id`, type: `int` },
-    { name: `archived`, type: `boolean` },
+    { name: `active`, type: `boolean` },
     { name: `email`, type: `varchar`, length: 40 },
     { name: `password`, type: `varchar`, length: 512 },
     { name: `permissions`, type: `Array`, arrayOf: { type: `int` } },

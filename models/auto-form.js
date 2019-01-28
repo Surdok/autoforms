@@ -110,7 +110,7 @@ AutoForm.prototype.generateClass = function () {
 
   /** If record can be archived, add column to track that */
   if ( this.canArchive() )
-    configRecord.properties.push({ name: `archived`, type: `boolean` });
+    configRecord.properties.push({ name: `active`, type: `boolean` });
   
   /** Configure record properties based on auto form properties */
   this.properties().forEach((property) => {

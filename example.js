@@ -97,7 +97,8 @@ server.addAutoForm({
       arrayOf: { type: `int` },   /** Required when 'type' is configured as 'array' */
       inputType: `multi-select`,  /** Optional, defaults to 'checkboxes' when 'type' is configured as 'array' */
       inputLabel: `Characteristics:`,
-      inputColumns: 8,
+      inputColumns: 6,
+      inputColumnsAfter: 2,
       options: [                  /** Required when 'type' is configured as 'array' */
         { 
           label: `Shiny`,         /** Optional, defaults to configured 'value' */
@@ -114,19 +115,13 @@ server.addAutoForm({
         },
       ]
     },
-    /** Example color (color) property */
-    {
-      name: `color`,
-      type: `color`,
-      inputLabel: `Color:`,
-      inputColumns: 4
-    },
     /** Example double (text) property */
     {
       name: `kilograms`,
       type: `double`,
       inputLabel: `Weight (kg):`,
-      inputColumns: 4
+      inputColumns: 6,
+      inputColumnsAfter: 2
     },
     /** Example text (select) property */
     {
@@ -208,7 +203,15 @@ server.addAutoForm({
       listHeader: `Discovered`,
       listOrder: 3,
       inputLabel: `Date/time Discovered:`,
-      inputColumns: 16
+      inputColumns: 10,
+      inputColumnsAfter: 2
+    },
+    /** Example color (color) property */
+    {
+      name: `color`,
+      type: `color`,
+      inputLabel: `Color:`,
+      inputColumns: 4
     },
     /** Example radios (radios) property */
     {

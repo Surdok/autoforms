@@ -67,8 +67,8 @@ AutoFormProperty.prototype.validate = function () {
   if ( !this.name().match(/^[a-zA-Z]{1}[a-zA-Z0-9_]+/) )
     throw new RangeError(`AutoFormProperty.validate(): Invalid property 'name', must start with letter and contain only 'a-zA-Z0-9_'.`);
   
-  if ( this.name() == `id` || this.name() == `archived` )
-    throw new SyntaxError(`AutoFormProperty.validate(): Invalid property 'name', cannot use reserved names of 'id' or 'archived'`);
+  if ( this.name() == `id` || this.name() == `active` )
+    throw new SyntaxError(`AutoFormProperty.validate(): Invalid property 'name', cannot use reserved names of 'id' or 'active'`);
     
   /** Validate type */
   if ( this.type().length == 0 )

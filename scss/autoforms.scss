@@ -94,16 +94,21 @@ label {
   margin-bottom: 10px;
 }
 
+
+
 input[type=text], input[type=password], input[type=email], input[type=tel], input[type=file], input[type=number], input[type=url], textarea {
   padding: 6px;
   border-radius: 5px;
   width: 100%;
   font-size: 16px;
-  font-family: system-ui;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 input[type=color] {
   height: 32px;
+  width: 48px;
+  padding: 2px;
+  border-width: 1px;
 }
 
 input[type=date], input[type=datetime-local], input[type=time], input[type=month], input[type=week] {
@@ -111,7 +116,7 @@ input[type=date], input[type=datetime-local], input[type=time], input[type=month
   border-radius: 5px;
   width: 100%;
   font-size: 16px;
-  font-family: system-ui;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 input[type=range] {
@@ -120,6 +125,10 @@ input[type=range] {
 
 input[type=radio] {
   display: inline-block;
+}
+
+input:not([type=checkbox]):not([type=radio]):not([type=file]) {
+  height: 33px;
 }
 
 select {

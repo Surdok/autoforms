@@ -4,3 +4,4 @@ node_modules
 sessions/*
 !sessions/.gitignore
 !sessions/attempts.json
+mysql-config.json

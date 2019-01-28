@@ -111,6 +111,10 @@ module.exports = (autoform) => {
         else if ( property.type() == `textarea` )
           form.textarea().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled());
       
+        /** Otherwise, if the property type is 'textarea'... */
+        else if ( property.type() == `file` )
+          form.file().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled());
+      
         /** Otherwise, if the property type is 'array' and input type is 'checkboxes'... */
         else if ( property.type() == `array` && property.inputType() == `checkboxes` ) {
           form.checkboxes().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled()).align(property.alignment());
