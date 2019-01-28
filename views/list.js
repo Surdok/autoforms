@@ -123,11 +123,24 @@ module.exports = (autoform, objClass) => {
           if ( key == `id` && !orderedListProperties.find(x => x.name() == `id`) && !remainingListProperties.find(x => x.name() == `id`) )
             return;
           
+          const property = autoform.properties().find(x => x.name() == key);
+          
           /** Add table data for column value */
-          if ( typeof row[key] === `object` && row[key].constructor.name == `Date` )
+          if ( property.type() == `date` ) {
             table.data().text(moment(row[key]).format(`MM-DD-Y`));
-          else
+          } else if ( property.type() == `datetime` ) {
+            table.data().text(moment(row[key]).format(`MM-DD-Y HH:mm:ss`));
+          } else if ( property.type() == `time` ) {
+            table.data().text(moment(row[key]).format(`HH:mm:ss`));
+          } else if ( [`text`, `int`, `double`].includes(property.type()) && property.options().length > 0 ) {
+            const option = property.options().find(x => x.value == row[key]);
+            
+            table.data().text(option.label);
+          } else if ( property.type() == `color` ) {
+            table.data().text(`<div style='margin: 3px; border: 1px solid black; background: ${row[key]}; min-width: 25px; min-height: 15px; '>&nbsp;</div>`);
+          } else {
             table.data().text(row[key]);
+          }
         });
         
         /** If user is logged in and table is editable, add header placeholder for edit buttons */

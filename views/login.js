@@ -11,7 +11,7 @@ module.exports = (autoform) => {
     const form = new ezforms.Form();
 
     /** Set form action and method properties */
-    form.action(`/login`).method(`POST`);
+    form.action(`login`).method(`POST`);
 
     /** Create form heading (default 16 cols wide) */
     form.heading().rank(1).text(`Login...`);

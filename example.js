@@ -37,7 +37,7 @@ server.addAutoForm({
       name: `revision`,           /** Required */
       type: `int`,                /** Required */
       inputLabel: `Revision #:`,  /** Optional, defaults to configured 'name' */
-      inputColumns: 8,            /** Optional, defaults to 16 */
+      inputColumns: 6,            /** Optional, defaults to 16 */
       required: true,             /** Optional, defaults to false */
       min: 0,                     /** Optional */
       max: 999,                   /** Optional */
@@ -49,7 +49,7 @@ server.addAutoForm({
       name: `revisionDate`,
       type: `date`,
       inputLabel: `Revision Date:`,
-      inputColumns: 8,
+      inputColumns: 10,
       required: true,
       default: `1970-01-01`,      /** Optional, defaults to browser default */
       validation: x => x.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/),
@@ -208,7 +208,7 @@ server.addAutoForm({
       listHeader: `Discovered`,
       listOrder: 3,
       inputLabel: `Date/time Discovered:`,
-      inputColumns: 10
+      inputColumns: 16
     },
     /** Example radios (radios) property */
     {
@@ -219,7 +219,7 @@ server.addAutoForm({
       listOrder: 2,
       inputType: `radios`, /** Optional, defaults to 'select' when 'type' is *not* configured as 'array' */
       inputLabel: `Continent:`,
-      inputColumns: 6,
+      inputColumns: 16,
       alignment: `vertical`,
       options: [
         {
