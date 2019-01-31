@@ -1,5 +1,4 @@
 /** Require external modules */
-const ejs = require(`ejs`);
 const ezforms = require(`ezforms`);
 const moment = require(`moment`);
 
@@ -9,8 +8,17 @@ const models = require(`../models`);
 module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
-      /** If not logged, can't add records */
-      if ( !req.user ) {
+      /** If can't edit records, redirect to list */
+      if ( autoform.canEdit() ) {
+        /** Redirect to list */
+        res.redirect(`list`);
+        
+        /** We're done */
+        return;
+      }
+      
+      /** If not logged in, can't edit records */
+      else if ( !req.user || ( autoform.editPermission() != -1 && !req.user.permissions().includes(autoform.editPermission()) ) )
         /** Redirect to login */
         res.redirect(`login?return=edit`);
         
@@ -153,8 +161,8 @@ module.exports = (autoform) => {
       form.button().cols(6).colsBefore(2).type(`button`).text(`Cancel`);
       form.button().cols(6).colsAfter(2).type(`submit`).text(`Save`);
       
-      /** Render template with our form */
-      req.markup += ejs.render(autoform.editTemplate(), { content: form.render() });
+      /** Append form to EZ HTML page */
+      req.page.append(form);
     } catch ( err ) {
       console.log(err);
     } finally {

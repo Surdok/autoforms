@@ -1,5 +1,4 @@
 /** Require external modules */
-const ejs = require(`ejs`);
 const express = require(`express`);
 const ezobjects = require(`ezobjects-mysql`);
 const fs = require(`fs`);
@@ -185,13 +184,25 @@ class AutoFormServer {
 
     /** Create router for this auto form */
     const router = express.Router();
+    
+    /** Create route to logout */
+    router.all(`/logout`, (req, res) => {
+      /** Delete stored credentials from session */
+      delete req.session.username;
+      delete req.session.password;
+
+      res.redirect(`/login`);
+    });
 
     /** Output header */
-    router.use((req, res, next) => {
-      req.markup += ejs.render(autoform.headerTemplate());
+    router.use(autoform.headerTemplate);
 
-      next();
-    });
+    /** Create 'before' routes to list, add, edit, archive, login, and create templates */
+    router.all(`/list`, autoform.listTemplateBefore);
+    router.all(`/add`, autoform.addTemplateBefore);
+    router.all(`/edit`, autoform.editTemplateBefore);
+    router.all(`/login`, autoform.loginTemplateBefore);
+    router.all(`/create`, autoform.createTemplateBefore);
 
     /** Create routes to list, add, edit, and archive records */
     router.all(`/list`, views.list(autoform));
@@ -203,22 +214,19 @@ class AutoFormServer {
     router.all(`/login`, views.login(autoform));
     router.all(`/create`, views.create(autoform));
 
-    /** Create route to logout */
-    router.all(`/logout`, (req, res) => {
-      /** Delete stored credentials from session */
-      delete req.session.username;
-      delete req.session.password;
+    /** Create 'after' routes to list, add, edit, archive, login, and create templates */
+    router.all(`/list`, autoform.listTemplateAfter);
+    router.all(`/add`, autoform.addTemplateAfter);
+    router.all(`/edit`, autoform.editTemplateAfter);
+    router.all(`/login`, autoform.loginTemplateAfter);
+    router.all(`/create`, autoform.createTemplateAfter);
 
-      res.redirect(`/login`);
-    });
+    /** Output header */
+    router.use(autoform.footerTemplate);
     
-    /** Output footer */
-    router.use((req, res, next) => {
-      req.markup += ejs.render(autoform.footerTemplate());
-
-      res.send(req.markup);
-    });
-
+    /** Render output and send to user */
+    router.use((req, res, next) => res.send(req.page.render()));
+    
     /** Call request to next express middleware/route */
     this.app().use(config.path, router);
   };

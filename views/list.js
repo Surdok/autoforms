@@ -1,7 +1,4 @@
 /** Require external modules */
-const ejs = require(`ejs`);
-const ezforms = require(`ezforms`);
-const eztables = require(`eztables`);
 const moment = require(`moment`);
 
 /** Require local modules */
@@ -83,40 +80,43 @@ module.exports = (autoform, objClass) => {
       /** Await database query */
       const results = await req.db.query(query);
 
-      /** Create EZ table */
-      const table = new eztables.Table();
+      /** Create convenient local variable for EZ HTML page */
+      const p = req.page;
 
+      /** Start table */
+      p.table();
+      
       /** Start table head */
-      table.head();
+      p.tableHead();
 
       /** Start table row */
-      table.row();
+      p.tableRow();
 
       /** Add ordered list headers */
       orderedListProperties.forEach((property) => {
-        table.header().text(property.listHeader());
+        p.tableHeader().text(property.listHeader());
       });
 
       /** Add remaining non-ordered list headers */
       remainingListProperties.forEach((property) => {
-        table.header().text(property.listHeader());
+        p.tableHeader().text(property.listHeader());
       });
 
       /** If user is logged in and table is editable, add header placeholder for edit buttons */
       if ( req.user && ( autoform.editPermission() == -1 || req.user.permissions().includes(autoform.editPermission()) ) && autoform.canEdit() )
-        table.header().text(`&nbsp;`);
+        p.tableHeader().text(`&nbsp;`);
 
       /** If user is logged in and table is archivable, add header placeholder for edit buttons */
       if ( req.user && autoform.canArchive() )
-        table.header().text(`&nbsp;`);
+        p.tableHeader().text(`&nbsp;`);
 
       /** Start table body */
-      table.body();
+      p.tableBody();
 
       /** Loop through each search result */
       results.forEach((row) => {
         /** Start table row */
-        table.row();
+        p.tableRow();
 
         /** Loop through each column of this search result row */
         Object.keys(row).forEach((key) => {
@@ -127,29 +127,43 @@ module.exports = (autoform, objClass) => {
           
           /** Add table data for column value */
           if ( property.type() == `date` ) {
-            table.data().text(moment(row[key]).format(`MM-DD-Y`));
+            p.tableData().text(moment(row[key]).format(`MM-DD-Y`));
           } else if ( property.type() == `datetime` ) {
-            table.data().text(moment(row[key]).format(`MM-DD-Y HH:mm:ss`));
+            p.tableData().text(moment(row[key]).format(`MM-DD-Y HH:mm:ss`));
           } else if ( property.type() == `time` ) {
-            table.data().text(moment(row[key]).format(`HH:mm:ss`));
+            p.tableData().text(moment(row[key]).format(`HH:mm:ss`));
           } else if ( [`text`, `int`, `double`].includes(property.type()) && property.options().length > 0 ) {
             const option = property.options().find(x => x.value == row[key]);
             
-            table.data().text(option.label);
+            p.tableData().text(option.label);
           } else if ( property.type() == `color` ) {
-            table.data().text(`<div style='margin: 3px; border: 1px solid black; background: ${row[key]}; min-width: 25px; min-height: 15px; '>&nbsp;</div>`);
+            p.tableData();
+            p.div(`tableData`).style(`margin: 3px; border: 1px solid black; background: ${row[key]}; min-width: 25px; min-height: 15px;`).text(`&nbsp;`);
           } else {
-            table.data().text(row[key]);
+            p.tableData().text(row[key]);
           }
         });
         
-        /** If user is logged in and table is editable, add header placeholder for edit buttons */
-        if ( req.user && autoform.canEdit() )
-          table.editButton(row.id);
-
-        /** If user is logged in and table is archivable, add header placeholder for edit buttons */
-        if ( req.user && autoform.canArchive() )
-          table.archiveButton(row.id);
+        /** If user is logged in and record is editable, add edit image and link */
+        if ( req.user && autoform.canEdit() ) {
+          p.tableData();
+          p.anchor(`tableData`).href(`edit?id=${row.id}&offset=${offset}`);
+          p.image(`anchor`).src(req.editIconPath);
+        }
+        
+        /** If user is logged in and record is archivable, add archive image and link */
+        if ( req.user && autoform.canArchive() ) {
+          p.tableData();
+          p.anchor(`tableData`).href(`archive?id=${row.id}&offset=${offset}`);
+          p.image(`anchor`).src(req.editIconPath);
+        }
+        
+        /** If user is logged in and record is deletable, add delete image and link */
+        if ( req.user && autoform.canArchive() ) {
+          p.tableData();
+          p.anchor(`tableData`).href(`delete?id=${row.id}&offset=${offset}`);
+          p.image(`anchor`).src(req.editIconPath);
+        }
       });
       
       /** If there are no results... */
@@ -157,17 +171,21 @@ module.exports = (autoform, objClass) => {
         /** Figure out how many columns to span for a full width table cell */
         let colspan = orderedListProperties.length + remainingListProperties.length;
         
-        /** Be sure to add a column for the edit icon, if needed */
+        /** Account for edit column, if applicable */
         if ( req.user && autoform.canEdit() )
           colspan++;
         
-        /** Be sure to add a column for the archive icon, if needed */
+        /** Account for archive column, if applicable */
         if ( req.user && autoform.canArchive() )
           colspan++;
         
+        /** Account for delete column, if applicable */
+        if ( req.user && autoform.canDelete() )
+          colspan++;
+        
         /** Output row with full width cell indicating no records found */
-        table.row();
-        table.data().colspan(colspan).addClass(`no-results`).text(`There were no records in the database.`);
+        p.tableRow();
+        p.tableData().colspan(colspan).addClass(`no-results`).text(`There were no records in the database.`);
       }
 
       /** Query the total number of rows the previous query would pull without the limit */
@@ -219,33 +237,30 @@ module.exports = (autoform, objClass) => {
       
       /** If this isn't the first page, add a 'far left' button */
       if ( offset - 15 >= 0 )
-        pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${Math.max(0, offset - numRows * 10)}';">&lt;&lt;</button>\n`;
-
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.max(0, offset - numRows * 10)}";`).text(`&lt;&lt;`);
+      
       /** If this isn't the first page, add a 'previous' button */
       if ( offset - 15 >= 0 )
-        pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${offset - numRows}';">&lt;</button>\n`;
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${offset - numRows}";`).text(`&lt;`);
       
       /** Loop from the identified start page number to identified finish page number */
       for ( let i = startPage; i <= finishPage; i++ ) {
         /** If it's the current page's button, output button with special 'selected' class */
         if ( currentPage == i )
-          pagingMarkup += `<button class='paging selected' type='button' onclick="javascript:location='list?offset=${(i - 1) * numRows}';">${i}</button>\n`;
+          p.button().addClass(`paging selected`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${(i - 1) * numRows}";`).text(i);
         
         /** Otherwise, just output button */
         else
-          pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${(i - 1) * numRows}';">${i}</button>\n`;
+          p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${(i - 1) * numRows}";`).text(i);
       }
       
       /** If this isn't the last page, add a 'next' button */
       if ( offset + numRows <  count[0].numRows )
-        pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${offset + numRows}';">&gt;</button>\n`;
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${offset + numRows}";`).text(`&gt;`);
       
       /** If this isn't the last page, add a 'far ahead' button */
       if ( offset + numRows <  count[0].numRows )
-        pagingMarkup += `<button class='paging' type='button' onclick="javascript:location='list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}';">&gt;&gt;</button>\n`;
-
-      /** Render EJS template with our rendered form */
-      req.markup += ejs.render(autoform.listTemplate(), { content: table.render(6), paging: pagingMarkup });
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}";`).text(`&gt;&gt;`);
     } catch ( err ) {
       console.log(err);
     } finally {

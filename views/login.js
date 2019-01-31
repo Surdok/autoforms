@@ -1,5 +1,4 @@
 /** Require external modules */
-const ejs = require(`ejs`);
 const ezforms = require(`ezforms`);
 
 /** Require local modules */
@@ -48,7 +47,7 @@ module.exports = (autoform) => {
           req.session.password = user.password();
 
           /** Success, redirect to home */
-          res.redirect(`/`);
+          res.redirect(req.query.back || `list`);
 
           return;
         }
@@ -66,8 +65,8 @@ module.exports = (autoform) => {
     form.button().cols(6).colsBefore(2).type(`reset`).text(`Reset`);
     form.button().cols(6).colsAfter(2).type(`submit`).text(`Submit`);
 
-    /** Render EJS template with our rendered form */
-    req.markup += ejs.render(autoform.loginTemplate(), { content: form.render(6) });
+    /** Append form to EZ HTML page */
+    req.page.append(form);
 
     /** Call next express handler */
     next();

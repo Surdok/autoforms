@@ -10,18 +10,23 @@ const configAutoForm = {
     { name: `path`, type: `text` },
     { name: `tableName`, type: `text` },
     { name: `canAdd`, type: `boolean` },
+    { name: `canDelete`, type: `boolean` },
     { name: `canEdit`, type: `boolean` },
     { name: `canArchive`, type: `boolean` },
     { name: `addPermission`, type: `int`, default: -1 },
+    { name: `deletePermission`, type: `int`, default: -1 },
     { name: `editPermission`, type: `int`, default: -1 },
     { name: `archivePermission`, type: `int`, default: -1 },
-    { name: `headerTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
-    { name: `footerTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
-    { name: `addTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
-    { name: `editTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
-    { name: `listTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
-    { name: `loginTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
-    { name: `createTemplate`, type: `text`, setTransform: x => x !== `` ? fs.readFileSync(x).toString() : `` },
+    { name: `headerTemplate`, type: `function`, default: (req, res, next) => next() },
+    { name: `addTemplateBefore`, type: `function`, default: (req, res, next) => next() },
+    { name: `editTemplateBefore`, type: `function`, default: (req, res, next) => next() },
+    { name: `loginTemplateBefore`, type: `function`, default: (req, res, next) => next() },
+    { name: `createTemplateBefore`, type: `function`, default: (req, res, next) => next() },
+    { name: `addTemplateAfter`, type: `function`, default: (req, res, next) => next() },
+    { name: `editTemplateAfter`, type: `function`, default: (req, res, next) => next() },
+    { name: `loginTemplateAfter`, type: `function`, default: (req, res, next) => next() },
+    { name: `createTemplateAfter`, type: `function`, default: (req, res, next) => next() },
+    { name: `footerTemplate`, type: `function`, default: (req, res, next) => next() },
     { name: `configRecord`, type: `object` },
     { name: `properties`, type: `array`, arrayOf: { instanceOf: `AutoFormProperty` } }
   ]
@@ -53,6 +58,10 @@ AutoForm.prototype.validate = function () {
   if ( this.addPermission() < -1 )
     throw new RangeError(`AutoForm.validate(): Invalid 'addPermission', must be integer value greater than zero.`);
   
+  /** Validate deletePermission */
+  if ( this.deletePermission() < -1 )
+    throw new RangeError(`AutoForm.validate(): Invalid 'deletePermission', must be integer value greater than zero.`);
+  
   /** Validate editPermission */
   if ( this.editPermission() < -1 )
     throw new RangeError(`AutoForm.validate(): Invalid 'editPermission', must be integer value greater than zero.`);
@@ -60,34 +69,6 @@ AutoForm.prototype.validate = function () {
   /** Validate archivePermission */
   if ( this.archivePermission() < -1 )
     throw new RangeError(`AutoForm.validate(): Invalid 'archivePermission', must be integer value greater than zero.`);
-  
-  /** Validate addTemplate */
-  if ( this.addTemplate() == `` )
-    this.addTemplate(path.resolve(__dirname + `/../templates/add.ejs`));
-  
-  /** Validate editTemplate */
-  if ( this.editTemplate() == `` )
-    this.editTemplate(path.resolve(__dirname + `/../templates/edit.ejs`));
-  
-  /** Validate listTemplate */
-  if ( this.listTemplate() == `` )
-    this.listTemplate(path.resolve(__dirname + `/../templates/list.ejs`));
-  
-  /** Validate loginTemplate */
-  if ( this.loginTemplate() == `` )
-    this.loginTemplate(path.resolve(__dirname + `/../templates/login.ejs`));
-  
-  /** Validate createTemplate */
-  if ( this.createTemplate() == `` )
-    this.createTemplate(path.resolve(__dirname + `/../templates/create.ejs`));
-  
-  /** Validate headerTemplate */
-  if ( this.headerTemplate() == `` )
-    this.headerTemplate(path.resolve(__dirname + `/../templates/header.ejs`));
-  
-  /** Validate addTemplate */
-  if ( this.footerTemplate() == `` )
-    this.footerTemplate(path.resolve(__dirname + `/../templates/footer.ejs`));
   
   /** Validate properties */
   if ( this.properties().length == 0 )
