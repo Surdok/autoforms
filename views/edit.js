@@ -179,7 +179,7 @@ module.exports = (autoform) => {
       });
       
       /** Add cancel and save buttons */
-      form.button().cols(6).colsBefore(2).type(`button`).text(`Cancel`);
+      form.button().cols(6).colsBefore(2).type(`button`).attr(`onclick`, `javascript:location="list";`).text(`Cancel`);
       form.button().cols(6).colsAfter(2).type(`submit`).text(`Save`);
       
       /** Append form to EZ HTML page */
