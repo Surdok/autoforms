@@ -215,9 +215,6 @@ class AutoFormServer {
 
       res.redirect(`/login`);
     });
-
-    /** Attach logger to request */
-    router.use((req) => req.log = autoform.logger());
     
     /** Output header */
     router.use(autoform.headerTemplate());
