@@ -165,7 +165,7 @@ module.exports = (autoform) => {
         /** Otherwise, if the property type is 'array' and input type is 'checkboxes'... */
         else if ( property.type() == `boolean` ) {
           form.checkboxes().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled()).align(property.alignment());
-          form.option().value(true).selected(record[property.name()]() == true);
+          form.option().value(record[property.name()]() ? 1 : 0).selected(record[property.name()]());
         }
       });
       
