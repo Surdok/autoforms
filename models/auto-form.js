@@ -96,7 +96,9 @@ AutoForm.prototype.generateClass = function () {
   
   /** Configure record properties based on auto form properties */
   this.properties().forEach((property) => {
-    if ( property.type() == `text` )
+    if ( property.type() == `boolean` )
+      configRecord.properties.push({ name: property.name(), type: `boolean` });
+    else if ( property.type() == `text` )
       configRecord.properties.push({ name: property.name(), type: `varchar`, length: property.maxLength() });
     else if ( property.type() == `int` )
       configRecord.properties.push({ name: property.name(), type: `int` });
