@@ -146,21 +146,21 @@ module.exports = (autoform, objClass) => {
         if ( req.user && autoform.canEdit() ) {
           p.tableData();
           p.anchor(`tableData`).href(`edit?id=${row.id}&offset=${offset}`);
-          p.image(`anchor`).src(`/images/` + path.basename(autoform.editIconPath));
+          p.image(`anchor`).src(`/images/` + path.basename(autoform.editIconPath()));
         }
         
         /** If user is logged in and record is archivable, add archive image and link */
         if ( req.user && autoform.canArchive() ) {
           p.tableData();
           p.anchor(`tableData`).href(`archive?id=${row.id}&offset=${offset}`);
-          p.image(`anchor`).src(`/images/` + path.basename(autoform.archiveIconPath));
+          p.image(`anchor`).src(`/images/` + path.basename(autoform.archiveIconPath()));
         }
         
         /** If user is logged in and record is deletable, add delete image and link */
         if ( req.user && autoform.canArchive() ) {
           p.tableData();
           p.anchor(`tableData`).href(`delete?id=${row.id}&offset=${offset}`);
-          p.image(`anchor`).src(`/images/` + path.basename(autoform.deleteIconPath));
+          p.image(`anchor`).src(`/images/` + path.basename(autoform.deleteIconPath()));
         }
       });
       
