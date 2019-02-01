@@ -160,16 +160,16 @@ class AutoFormServer {
 
     /** Overwrite properties in config with array of auto form properties */
     config.properties = properties;
-    
-    /** If record can be archived, add column to track that */
-    if ( config.canArchive )
-      config.properties.push(new models.AutoFormProperty({ name: `active`, type: `boolean`, inputCols: 16, inputLabel: `Active:` }));
 
     /** Create auto form */
     const autoform = new models.AutoForm(config);
 
     /** Validate auto form */
     autoform.validate();
+    
+    /** If record can be archived, add column to track that */
+    if ( autoform.canArchive() )
+      autoform.properties().push(new models.AutoFormProperty({ name: `active`, type: `boolean`, inputCols: 16, inputLabel: `Active:` }));
 
     /** Generate record class */
     autoform.generateClass(autoform);
