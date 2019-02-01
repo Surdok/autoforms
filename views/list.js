@@ -161,7 +161,7 @@ module.exports = (autoform, objClass) => {
         }
         
         /** If user is logged in and record is deletable, add delete image and link */
-        if ( req.user && autoform.canArchive() ) {
+        if ( req.user && autoform.canDelete() ) {
           p.tableData();
           p.anchor(`tableData`).href(`delete?id=${row.id}&offset=${offset}`);
           p.image(`anchor`).src(`/images/` + path.basename(autoform.deleteIconPath()));
