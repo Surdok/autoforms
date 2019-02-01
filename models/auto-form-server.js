@@ -169,7 +169,7 @@ class AutoFormServer {
     
     /** If record can be archived, add column to track that */
     if ( autoform.canArchive() )
-      autoform.properties().push(new models.AutoFormProperty({ name: `active`, type: `boolean`, inputCols: 16, inputLabel: `Active:` }));
+      autoform.properties().push(new models.AutoFormProperty({ name: `active`, type: `boolean`, inputCols: 16, inputLabel: `Active:`, alignment: `horizontal` }));
 
     /** Generate record class */
     autoform.generateClass(autoform);

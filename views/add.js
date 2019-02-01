@@ -151,6 +151,13 @@ module.exports = (autoform) => {
             form.option().value(option.value).text(option.label);
           });
         }
+        
+        /** Otherwise, if the property type is 'array' and input type is 'checkboxes'... */
+        else if ( property.type() == `boolean` ) {
+          form.radios().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled()).align(property.alignment());
+          form.option().value(1).label(`Yes`);
+          form.option().value(0).label(`No`).selected(true);
+        }
       });
       
       /** Add cancel and save buttons */
