@@ -23,7 +23,7 @@ module.exports = (autoform) => {
       const record = new autoform.Record();
 
       /** Load record */
-      const result = await record.load(req.query.id, req.db);
+      const result = await record.load(parseInt(req.query.id), req.db);
 
       if ( !result )
         throw new ReferenceError(`views.archive(): No record exists with that id number.`);
