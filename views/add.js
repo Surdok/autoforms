@@ -38,7 +38,7 @@ module.exports = (autoform) => {
             record[property.name()](new Date(req.body[property.name()]));
           else if ( property.type() == `boolean` )
             record[property.name()](req.body[property.name()] ? true : false);
-          else if ( ( property.type() == `int` || property.type() == `double` ) && isNaN(req.body[property.name()]) )
+          else if ( ( property.type() == `int` || property.type() == `double` ) && ( isNaN(req.body[property.name()]) || req.body[property.name()] == `` ) )
             record[property.name()](0);
           else if ( property.type() == `array` )
             record[property.name()](typeof req.body[property.name()] == `object` && req.body[property.name()].constructor.name == `Array` ? req.body[property.name()] : [req.body[property.name()]]);
