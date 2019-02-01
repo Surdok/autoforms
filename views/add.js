@@ -6,7 +6,7 @@ module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
       /** If can't add records, redirect to list */
-      if ( autoform.canAdd() ) {
+      if ( !autoform.canAdd() ) {
         /** Redirect to list */
         res.redirect(`list`);
         
