@@ -1,6 +1,3 @@
-/** Require local modules */
-const models = require(`../models`);
-
 module.exports = (autoform) => {
   return async (req, res, next) => {
     /** If can't delete records, redirect to list */
@@ -13,12 +10,29 @@ module.exports = (autoform) => {
       }
       
       /** If not logged in, can't delete records */
-      else if ( !req.user || ( autoform.deletePermission() != -1 && !req.user.permissions().includes(autoform.deletePermission()) ) )
+      else if ( !req.user || ( autoform.deletePermission() != -1 && !req.user.permissions().includes(autoform.deletePermission()) ) ) {
         /** Redirect to login */
-        res.redirect(`login?return=list`);
+        res.redirect(`login?return=list&offset=${req.query.offset}`);
         
         /** We're done */
         return;
+      }
+      
+      if ( req.method == `POST` ) {
+        /** Create record */
+        const record = new autoform.Record();
+        
+        /** Load record */
+        const result = await record.load(req.query.id, req.db);
+        
+        if ( !result )
+          throw new ReferenceError(`views.delete(): No record exists with that id number.`);
+
+        /** Delete record */
+        await record.delete(req.db);
+        
+        /** Redirect to list at previous offset */
+        res.redirect(`list?offset=${req.body.offset}`);
       }
 
     /** Call next express handler */

@@ -1,9 +1,6 @@
 /** Require external modules */
 const moment = require(`moment`);
 
-/** Require local modules */
-const models = require(`../models`);
-
 module.exports = (autoform, objClass) => {
   return async (req, res, next) => {
     try {
@@ -49,7 +46,7 @@ module.exports = (autoform, objClass) => {
       query += ` FROM ${autoform.tableName()}`
 
       if ( autoform.canArchive() )
-        query += ` WHERE active = 0`;
+        query += ` WHERE active = 1`;
       
       /** Add ORDER BY to query */
       query += ` ORDER BY `;

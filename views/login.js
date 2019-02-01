@@ -47,7 +47,8 @@ module.exports = (autoform) => {
           req.session.password = user.password();
 
           /** Success, redirect to home */
-          res.redirect(req.query.back || `list`);
+          if ( req.query.return == `edit` && !isNaN()
+            res.redirect(req.query.return || `list`);
 
           return;
         }

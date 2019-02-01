@@ -2,9 +2,6 @@
 const ezforms = require(`ezforms`);
 const moment = require(`moment`);
 
-/** Require local modules */
-const models = require(`../models`);
-
 module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
@@ -18,9 +15,9 @@ module.exports = (autoform) => {
       }
       
       /** If not logged in, can't edit records */
-      else if ( !req.user || ( autoform.editPermission() != -1 && !req.user.permissions().includes(autoform.editPermission()) ) )
+      else if ( !req.user || ( autoform.editPermission() != -1 && !req.user.permissions().includes(autoform.editPermission()) ) ) {
         /** Redirect to login */
-        res.redirect(`login?return=edit`);
+        res.redirect(`login?return=edit&id=${req.query.id}`);
         
         /** We're done */
         return;
@@ -51,7 +48,7 @@ module.exports = (autoform) => {
         await record.update(req.db);
         
         /** Redirect to list */
-        res.redirect(`list`);
+        res.redirect(`list?offset=${req.body.offset}`);
         
         /** We're done */
         return;
@@ -74,6 +71,12 @@ module.exports = (autoform) => {
       
       /** Set form method to POST */
       form.method(`POST`);
+      
+      /** Add hidden input for id */
+      form.hidden().name(`id`).value(req.query.id);
+      
+      /** Add hidden input for offset */
+      form.hidden().name(`offset`).value(req.query.offset);
       
       /** Add form heading */
       form.heading().rank(1).text(`Edit Record`);

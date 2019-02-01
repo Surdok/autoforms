@@ -2,9 +2,6 @@
 const ezforms = require(`ezforms`);
 const moment = require(`moment`);
 
-/** Require local modules */
-const models = require(`../models`);
-
 module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
@@ -18,7 +15,7 @@ module.exports = (autoform) => {
       }
       
       /** If not logged in, can't add records */
-      else if ( !req.user || ( autoform.addPermission() != -1 && !req.user.permissions().includes(autoform.addPermission()) ) )
+      else if ( !req.user || ( autoform.addPermission() != -1 && !req.user.permissions().includes(autoform.addPermission()) ) ) {
         /** Redirect to login */
         res.redirect(`login?return=edit`);
         
