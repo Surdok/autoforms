@@ -259,6 +259,10 @@ module.exports = (autoform, objClass) => {
       /** If this isn't the last page, add a 'far ahead' button */
       if ( offset + numRows <  count[0].numRows )
         p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}";`).text(`&gt;&gt;`);
+      
+      p.lineBreak();
+      p.button().addClass(`addButton`).attr(`onclick`, `javascript:location="add";`).text(`Add Record`);
+      
     } catch ( err ) {
       console.log(err);
     } finally {

@@ -53,7 +53,6 @@ class AutoFormServer {
 
     /** Use the following middleware to log requests and attach various useful variables to request object */
     this.app().use(async (req, res, next) => {
-      req.markup = ``;
       req.db = this.db();
       req.escape = htmlspecialchars;
       req.page = new ezhtml.Page();
