@@ -52,7 +52,7 @@ class AutoFormServer {
     }));
     
     /** Create custom Winston logger */
-    const logger = winston.createLogger({
+    const logger = new winston.Logger({
       transports: [
         new winston.transports.Console({
           level: `silly`,

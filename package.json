@@ -26,6 +26,6 @@
     "htmlspecialchars": "^1.0.5",
     "moment": "^2.24.0",
     "session-file-store": "^1.2.0",
-    "winston": "^3.2.1"
+    "winston": "^2.4.2"
   }
 }
