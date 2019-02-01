@@ -219,6 +219,7 @@ class AutoFormServer {
     router.all(`/add`, views.add(autoform));
     router.all(`/edit`, views.edit(autoform));
     router.all(`/archive`, views.archive(autoform));
+    router.all(`/delete`, views.delete(autoform));
 
     /** Create route to login and create account */
     router.all(`/login`, views.login(autoform));
