@@ -83,7 +83,7 @@ module.exports = (autoform) => {
     form.button().cols(6).colsAfter(2).type(`submit`).text(`Create`);
 
     /** Append form to EZ HTML page */
-    req.page.append(form);
+    req.page.container([`div`, `body`]).append(form);
 
     /** Call next express handler */
     next();

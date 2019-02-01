@@ -165,7 +165,7 @@ module.exports = (autoform) => {
       form.button().cols(6).colsAfter(2).type(`submit`).text(`Save`);
       
       /** Append form to EZ HTML page */
-      req.page.append(form);
+      req.page.container([`div`, `body`]).append(form);
     } catch ( err ) {
       console.log(err);
     } finally {
