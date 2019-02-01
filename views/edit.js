@@ -41,7 +41,9 @@ module.exports = (autoform) => {
             return;
           
           /** Set record property */
-          if ( property.type() == `date` || property.type() == `datetime` )
+          if ( ( property.type() == `date` || property.type() == `datetime` ) && req.body[property.name()] == `` )
+            record[property.name()](new Date(0));
+          else if ( property.type() == `date` || property.type() == `datetime` )
             record[property.name()](new Date(req.body[property.name()]));
           else if ( property.type() == `boolean` )
             record[property.name()](req.body[property.name()] ? true : false);
