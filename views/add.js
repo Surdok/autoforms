@@ -17,7 +17,7 @@ module.exports = (autoform) => {
       /** If not logged in, can't add records */
       else if ( !req.user || ( autoform.addPermission() != -1 && !req.user.permissions().includes(autoform.addPermission()) ) ) {
         /** Redirect to login */
-        res.redirect(`login?return=edit`);
+        res.redirect(`login?return=add`);
         
         /** We're done */
         return;
