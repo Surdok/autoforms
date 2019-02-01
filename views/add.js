@@ -27,16 +27,21 @@ module.exports = (autoform) => {
       if ( req.method == `POST` ) {
         /** Create record */
         const record = new autoform.Record();
-        
+          console.log(req.body);
+
         /** Loop through each autoform property... */
         autoform.properties().forEach((property) => {
           /** If the property is the id property or is not editable, skip */
-          if ( property.name() == `id` || !property.canEdit() )
+          if ( property.name() == `id` || property.name() == `active` || !property.canEdit() )
             return;
           
           /** Set record property */
           if ( property.type() == `date` || property.type() == `datetime` )
             record[property.name()](new Date(req.body[property.name()]));
+          else if ( property.type() == `boolean` )
+            record[property.name()](req.body[property.name()] ? true : false);
+          else if ( property.type() == `array` )
+            record.property.name()](typeof req.body[property.name()] == `object` && req.body[property.name()].constructor.name == `Array` ? req.body[property.name()] : [req.body[property.name()]]);
           else
             record[property.name()](req.body[property.name()]);
         });

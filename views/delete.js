@@ -33,6 +33,9 @@ module.exports = (autoform) => {
 
       /** Redirect to list at previous offset */
       res.redirect(`list?offset=${req.query.offset}`);
+      
+      /** We're done */
+      return;
     } catch ( err ) {
       console.log(err);
     } finally {

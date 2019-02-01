@@ -43,6 +43,10 @@ module.exports = (autoform) => {
           /** Set record property */
           if ( property.type() == `date` || property.type() == `datetime` )
             record[property.name()](new Date(req.body[property.name()]));
+          else if ( property.type() == `boolean` )
+            record[property.name()](req.body[property.name()] ? true : false);
+          else if ( property.type() == `array` )
+            record.property.name()](typeof req.body[property.name()] == `object` && req.body[property.name()].constructor.name == `Array` ? req.body[property.name()] : [req.body[property.name()]]);
           else
             record[property.name()](req.body[property.name()]);
         });
