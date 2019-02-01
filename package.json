@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "./make.sh; node example.js",
-    "test": "eslint index.js"
+    "test": "eslint index.js models/auto-form-property.js models/auto-form-server.js models/auto-form.js models/index.js models/user.js views/add.js views/archive.js views/create.js views/delete.js views/edit.js views/index.js views/list.js views/login.js"
   },
   "keywords": [
     "Automatic",
@@ -25,6 +25,7 @@
     "ezobjects-mysql": "^6.1.8",
     "htmlspecialchars": "^1.0.5",
     "moment": "^2.24.0",
-    "session-file-store": "^1.2.0"
+    "session-file-store": "^1.2.0",
+    "winston": "^3.2.1"
   }
 }

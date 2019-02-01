@@ -4,7 +4,7 @@ const ezforms = require(`ezforms`);
 /** Require local modules */
 const models = require(`../models`);
 
-module.exports = (autoform) => {
+module.exports = () => {
   return async (req, res, next) => {
     /** Create form */
     const form = new ezforms.Form();
@@ -18,7 +18,7 @@ module.exports = (autoform) => {
     /** Try to load user if request method is POST */
     if ( req.method == `POST` ) {
       try {
-        console.log(`User ${req.body.username} attempting login.`);
+        req.log(`User ${req.body.username} attempting login.`);
 
         /** Create user model */
         const user = new models.User();
@@ -28,19 +28,19 @@ module.exports = (autoform) => {
 
         /** If user does not exist... */
         if ( !result ) {
-          console.log(`Login failed, user ${req.body.username} does not exist`);
+          req.log(`Login failed, user ${req.body.username} does not exist`);
           throw new Error(`Username or password invalid!`);
         } 
 
         /** Otherwise, if password is incorrect... */
         else if ( !user.authenticate(req.body.password) ) {
-          console.log(`Login failed, user ${req.body.username} entered invalid password`);
+          req.log(`Login failed, user ${req.body.username} entered invalid password`);
           throw new Error(`Username or password invalid!`);
         }
 
         /* Otherwise, success... */
         else {
-          console.log(`Login successful for ${req.body.username} from ${req.ip}`);
+          req.log(`Login successful for ${req.body.username} from ${req.ip}`);
 
           /** Store credentials in session so login is not required */
           req.session.username = user.username();

@@ -2,7 +2,7 @@
 const moment = require(`moment`);
 const path = require(`path`);
 
-module.exports = (autoform, objClass) => {
+module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
       /** Capture or define offset */
@@ -44,7 +44,7 @@ module.exports = (autoform, objClass) => {
       query = query.substring(0, query.length - 2);
 
       /** Add FROM table name to query */
-      query += ` FROM ${autoform.tableName()}`
+      query += ` FROM ${autoform.tableName()}`;
 
       if ( autoform.canArchive() )
         query += ` WHERE active = 1`;
@@ -204,7 +204,6 @@ module.exports = (autoform, objClass) => {
       let finishPage = currentPage;
       let numButtons = 1;
       let which = 1;
-      let pagingMarkup = ``;
 
       /** 
        * There could be 200 pages, so let's limit ourselves to 9 page numbers and distribute
@@ -270,7 +269,7 @@ module.exports = (autoform, objClass) => {
       }
       
     } catch ( err ) {
-      console.log(err);
+      req.log(err);
     } finally {
       await req.db.close();
     }

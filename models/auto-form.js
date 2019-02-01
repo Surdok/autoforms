@@ -1,6 +1,5 @@
 /** Require external modules */
 const ezobjects = require(`ezobjects-mysql`);
-const fs = require(`fs`);
 const path = require(`path`);
 
 /** Configure AutoForm class */

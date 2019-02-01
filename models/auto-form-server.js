@@ -2,13 +2,13 @@
 const express = require(`express`);
 const ezhtml = require(`ezhtml`);
 const ezobjects = require(`ezobjects-mysql`);
-const fs = require(`fs`);
 const htmlspecialchars = require(`htmlspecialchars`);
 const parser = require(`body-parser`);
 const path = require(`path`);
 const session = require(`express-session`);
 const store = require(`session-file-store`);
 const url = require(`url`);
+const winston = require(`winston`);
 
 /** Require local moduels */
 const models = require(`./index`);
@@ -50,19 +50,31 @@ class AutoFormServer {
         maxAge: 1209600000
       }
     }));
+    
+    /** Create custom Winston logger */
+    const logger = new winston.Logger({
+      transports: [
+        new winston.transports.Console({
+          level: `silly`,
+          timestamp: true,
+          prettyPrint: true
+        })
+      ]
+    });
 
     /** Use the following middleware to log requests and attach various useful variables to request object */
     this.app().use(async (req, res, next) => {
       req.db = this.db();
       req.escape = htmlspecialchars;
       req.page = new ezhtml.Page();
+      req.log = logger.info;
 
       /** Log the page request */
-      console.log(`${req.method} ${url.parse(req.originalUrl).pathname} requested by ${req.ip} (Worker ${process.pid})`);
+      req.log(`${req.method} ${url.parse(req.originalUrl).pathname} requested by ${req.ip} (Worker ${process.pid})`);
 
       /** If there is a user session associated with this request, process it and attach user to request */
       if ( req.session.username && req.session.password ) {
-        console.log(`Existing session found for ${req.session.username}, authenticating...`);
+        req.log(`Existing session found for ${req.session.username}, authenticating...`);
 
         /** Create user model */
         const user = new models.User();
@@ -75,12 +87,12 @@ class AutoFormServer {
           /** Verify session password and attach user to request or issue warning */
           if ( user.password() == req.session.password ) {
             req.user = user;
-            console.log(`Session for ${req.session.username} is authenticated, processing request...`);
+            req.log(`Session for ${req.session.username} is authenticated, processing request...`);
           } else {
-            console.log(`Attempted session login by ${req.session.username} failed!`);
+            req.log(`Attempted session login by ${req.session.username} failed!`);
           }
         } catch ( err ) {
-          console.log(err);
+          req.log(err);
 
           /** Delete stored credentials from session */
           delete req.session.username;
@@ -204,6 +216,9 @@ class AutoFormServer {
       res.redirect(`/login`);
     });
 
+    /** Attach logger to request */
+    router.use((req) => req.log = autoform.logger());
+    
     /** Output header */
     router.use(autoform.headerTemplate());
 
@@ -236,11 +251,11 @@ class AutoFormServer {
     router.use(autoform.footerTemplate());
     
     /** Render output and send to user */
-    router.use((req, res, next) => res.send(req.page.render()));
+    router.use((req, res) => res.send(req.page.render()));
     
     /** Call request to next express middleware/route */
     this.app().use(config.path, router);
-  };
+  }
 
   /** Create method for creating tables */
   async createTables() {
@@ -248,19 +263,18 @@ class AutoFormServer {
     for ( let i = 0, iMax = this.autoforms().length; i < iMax; i++ ) {
       /** Create user table if it doesn't already exist */
       await ezobjects.createTable(this.autoforms()[i].configRecord(), this.db());
-    };
+    }
 
     /** Create user table if it doesn't already exist */
     await ezobjects.createTable(models.configUser, this.db());
-  };
+  }
 
   /** Create method for starting express web server */
   async listen(port) {
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
       this.app().listen(port, () => resolve());
     });
-  };
-
+  }
 }
 
 /** Export AutoFormServer class */

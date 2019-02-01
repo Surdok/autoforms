@@ -4,7 +4,7 @@ const ezforms = require(`ezforms`);
 /** Require local modules */
 const models = require(`../models`);
 
-module.exports = (autoform) => {
+module.exports = () => {
   return async (req, res, next) => {
     /** Create form */
     const form = new ezforms.Form();
@@ -36,7 +36,7 @@ module.exports = (autoform) => {
           throw new Error(`Your password cannot contain spaces.`);
         
         /** Validate email */
-        else if ( !req.body.email.match(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`) )
+        else if ( !req.body.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) )
           throw new Error(`That email address is not valid.`);
 
         /** Create user model */
@@ -45,7 +45,7 @@ module.exports = (autoform) => {
         if ( await user.load(req.body.username, req.db) )
           throw new Error(`That username already exists.`);
         
-        console.log(`Creating new account for '${req.body.username}'.`);
+        req.log(`Creating new account for '${req.body.username}'.`);
         
         /** Set properties */
         user.username(req.body.username);
@@ -56,7 +56,7 @@ module.exports = (autoform) => {
         /** Insert user into database */
         await user.insert(req.db);
 
-        console.log(`Login successful for ${req.body.username} from ${req.ip}`);
+        req.log(`Login successful for ${req.body.username} from ${req.ip}`);
 
         /** Store credentials in session so login is not required */
         req.session.username = user.username();

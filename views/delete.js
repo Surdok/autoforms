@@ -37,7 +37,7 @@ module.exports = (autoform) => {
       /** We're done */
       return;
     } catch ( err ) {
-      console.log(err);
+      req.log(err);
     } finally {
       await req.db.close();
     }

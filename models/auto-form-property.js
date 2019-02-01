@@ -18,13 +18,6 @@ const propertyTypes = [
   `array`
 ];
 
-/** Define arrayOf types */
-const arrayOfTypes = [
-  `text`,
-  `int`,
-  `double`
-];
-
 /** Configure AutoFormProperty class */
 const configAutoFormProperty = {
   className: `AutoFormProperty`,
@@ -49,7 +42,7 @@ const configAutoFormProperty = {
     { name: `max`, type: `double` },
     { name: `pattern`, type: `text` },
     { name: `maxLength`, type: `int`, default: 32 },
-    { name: `validation`, type: `function`, default: x => true },
+    { name: `validation`, type: `function`, default: () => true },
     { name: `validationMessage`, type: `text` },
     { name: `options`, type: `array`, arrayOf: { type: `Object` } }
   ]

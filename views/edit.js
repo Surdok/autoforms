@@ -46,7 +46,7 @@ module.exports = (autoform) => {
           else if ( property.type() == `boolean` )
             record[property.name()](req.body[property.name()] ? true : false);
           else if ( property.type() == `array` )
-            record.property.name()](typeof req.body[property.name()] == `object` && req.body[property.name()].constructor.name == `Array` ? req.body[property.name()] : [req.body[property.name()]]);
+            record[property.name()](typeof req.body[property.name()] == `object` && req.body[property.name()].constructor.name == `Array` ? req.body[property.name()] : [req.body[property.name()]]);
           else
             record[property.name()](req.body[property.name()]);
         });
@@ -189,7 +189,7 @@ module.exports = (autoform) => {
       /** Append form to EZ HTML page */
       req.page.container([`div`, `body`]).append(form);
     } catch ( err ) {
-      console.log(err);
+      req.log(err);
     } finally {
       await req.db.close();
     }

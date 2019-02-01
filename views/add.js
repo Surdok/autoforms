@@ -1,6 +1,5 @@
 /** Require external modules */
 const ezforms = require(`ezforms`);
-const moment = require(`moment`);
 
 module.exports = (autoform) => {
   return async (req, res, next) => {
@@ -27,7 +26,6 @@ module.exports = (autoform) => {
       if ( req.method == `POST` ) {
         /** Create record */
         const record = new autoform.Record();
-          console.log(req.body);
 
         /** Loop through each autoform property... */
         autoform.properties().forEach((property) => {
@@ -41,7 +39,7 @@ module.exports = (autoform) => {
           else if ( property.type() == `boolean` )
             record[property.name()](req.body[property.name()] ? true : false);
           else if ( property.type() == `array` )
-            record.property.name()](typeof req.body[property.name()] == `object` && req.body[property.name()].constructor.name == `Array` ? req.body[property.name()] : [req.body[property.name()]]);
+            record[property.name()](typeof req.body[property.name()] == `object` && req.body[property.name()].constructor.name == `Array` ? req.body[property.name()] : [req.body[property.name()]]);
           else
             record[property.name()](req.body[property.name()]);
         });
@@ -172,7 +170,7 @@ module.exports = (autoform) => {
       /** Attach form to page */
       req.page.container([`div`, `body`]).append(form);
     } catch ( err ) {
-      console.log(err);
+      req.log(err);
     } finally {
       await req.db.close();
     }
