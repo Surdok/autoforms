@@ -41,7 +41,10 @@ module.exports = (autoform) => {
             return;
           
           /** Set record property */
-          record[property.name()](req.body[property.name()]);
+          if ( property.type() == `date` || property.type() == `datetime` )
+            record[property.name()](new Date(req.body[property.name()]));
+          else
+            record[property.name()](req.body[property.name()]);
         });
         
         /** Insert record into database */
