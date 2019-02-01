@@ -1,4 +1,4 @@
-# Autoforms v0.9.3
+# Autoforms v0.9.4
 
 Automatic form generation for basic table management.
 
