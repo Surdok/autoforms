@@ -41,6 +41,9 @@ module.exports = (autoform) => {
             record[property.name()](req.body[property.name()]);
         });
         
+        if ( autoform.canArchive() )
+          record.active(true);
+        
         /** Insert record into database */
         await record.insert(req.db);
         
