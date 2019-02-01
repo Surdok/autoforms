@@ -147,7 +147,7 @@ class AutoFormServer {
   /** Create method for adding auto form configurations */
   addAutoForm(config) {
     /** If record can be archived, add column to track that */
-    if ( this.canArchive() )
+    if ( config.canArchive )
       config.properties.push({ name: `active`, type: `boolean`, inputCols: 16, inputLabel: `Active:` });
     
     /** Create array to store auto form property objects */
