@@ -261,7 +261,7 @@ module.exports = (autoform, objClass) => {
         p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}";`).text(`&gt;&gt;`);
       
       p.lineBreak();
-      p.button().addClass(`addButton`).attr(`onclick`, `javascript:location="add";`).text(`Add Record`);
+      p.button().addClass(`addButton`).type(`button`).attr(`onclick`, `javascript:location="add";`).text(`Add Record`);
       
     } catch ( err ) {
       console.log(err);
