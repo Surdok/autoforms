@@ -6,7 +6,7 @@ module.exports = (autoform) => {
   return async (req, res, next) => {
     try {
       /** If can't edit records, redirect to list */
-      if ( autoform.canEdit() ) {
+      if ( !autoform.canEdit() ) {
         /** Redirect to list */
         res.redirect(`list`);
         
