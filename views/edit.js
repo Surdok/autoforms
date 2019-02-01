@@ -132,6 +132,14 @@ module.exports = (autoform) => {
         else if ( property.type() == `time` )
           form.time().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
       
+        /** Otherwise, if the property type is 'email'... */
+        else if ( property.type() == `email` )
+          form.email().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
+      
+        /** Otherwise, if the property type is 'time'... */
+        else if ( property.type() == `tel` )
+          form.tel().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
+      
         /** Otherwise, if the property type is 'color'... */
         else if ( property.type() == `color` )
           form.color().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
@@ -149,7 +157,7 @@ module.exports = (autoform) => {
           form.checkboxes().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled()).align(property.alignment());
       
           property.options().forEach((option) => {
-            form.option().value(option.value).text(option.label).selected(record[property.name()]() == option.value);
+            form.option().value(option.value).text(option.label).selected(record[property.name()]().includes(option.value));
           });
         }
         
@@ -158,7 +166,7 @@ module.exports = (autoform) => {
           form.multiselect().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled());
       
           property.options().forEach((option) => {
-            form.option().value(option.value).text(option.label).selected(record[property.name()]() == option.value);
+            form.option().value(option.value).text(option.label).selected(record[property.name()]().includes(option.value));
           });
         }
         

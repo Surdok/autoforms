@@ -114,6 +114,14 @@ module.exports = (autoform) => {
         else if ( property.type() == `time` )
           form.time().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).required(property.required()).disabled(property.disabled());
       
+        /** Otherwise, if the property type is 'email'... */
+        else if ( property.type() == `email` )
+          form.email().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).required(property.required()).disabled(property.disabled());
+      
+        /** Otherwise, if the property type is 'time'... */
+        else if ( property.type() == `tel` )
+          form.tel().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).required(property.required()).disabled(property.disabled());
+      
         /** Otherwise, if the property type is 'color'... */
         else if ( property.type() == `color` )
           form.color().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).required(property.required()).disabled(property.disabled());
