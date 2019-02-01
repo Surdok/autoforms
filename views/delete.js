@@ -1,6 +1,7 @@
 module.exports = (autoform) => {
   return async (req, res, next) => {
-    /** If can't delete records, redirect to list */
+    try {
+      /** If can't archive records, redirect to list */
       if ( !autoform.canDelete() ) {
         /** Redirect to list */
         res.redirect(`list`);
@@ -9,7 +10,7 @@ module.exports = (autoform) => {
         return;
       }
       
-      /** If not logged in, can't delete records */
+      /** If not logged in, can't archive records */
       else if ( !req.user || ( autoform.deletePermission() != -1 && !req.user.permissions().includes(autoform.deletePermission()) ) ) {
         /** Redirect to login */
         res.redirect(`login?return=list&offset=${req.query.offset}`);
@@ -27,11 +28,16 @@ module.exports = (autoform) => {
       if ( !result )
         throw new ReferenceError(`views.delete(): No record exists with that id number.`);
 
-      /** Delete record */
+      /** Update record */
       await record.delete(req.db);
 
       /** Redirect to list at previous offset */
       res.redirect(`list?offset=${req.query.offset}`);
+    } catch ( err ) {
+      console.log(err);
+    } finally {
+      await req.db.close();
+    }
 
     /** Call next express handler */
     next();
