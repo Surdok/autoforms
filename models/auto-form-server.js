@@ -1,5 +1,6 @@
 /** Require external modules */
 const express = require(`express`);
+const ezhtml = require(`ezhtml`);
 const ezobjects = require(`ezobjects-mysql`);
 const fs = require(`fs`);
 const htmlspecialchars = require(`htmlspecialchars`);
@@ -55,6 +56,7 @@ class AutoFormServer {
       req.markup = ``;
       req.db = this.db();
       req.escape = htmlspecialchars;
+      req.page = new ezhtml.Page();
 
       /** Log the page request */
       console.log(`${req.method} ${url.parse(req.originalUrl).pathname} requested by ${req.ip} (Worker ${process.pid})`);
