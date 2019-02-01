@@ -100,12 +100,16 @@ module.exports = (autoform, objClass) => {
         p.tableHeader().text(property.listHeader());
       });
 
-      /** If user is logged in and table is editable, add header placeholder for edit buttons */
+      /** If user is logged in and table is editable, add header placeholder for edit button */
       if ( req.user && ( autoform.editPermission() == -1 || req.user.permissions().includes(autoform.editPermission()) ) && autoform.canEdit() )
         p.tableHeader().text(`&nbsp;`);
 
-      /** If user is logged in and table is archivable, add header placeholder for edit buttons */
-      if ( req.user && autoform.canArchive() )
+      /** If user is logged in and table is archivable, add header placeholder for archive button */
+      if ( req.user && ( autoform.archivePermission() == -1 || req.user.permissions().includes(autoform.archivePermission()) ) && autoform.canArchive() )
+        p.tableHeader().text(`&nbsp;`);
+      
+      /** If user is logged in and table is deletable, add header placeholder for delete button */
+      if ( req.user && ( autoform.deletePermission() == -1 || req.user.permissions().includes(autoform.deletePermission()) ) && autoform.canDelete() )
         p.tableHeader().text(`&nbsp;`);
 
       /** Start table body */
