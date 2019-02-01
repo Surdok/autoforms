@@ -50,16 +50,6 @@ class AutoFormServer {
       }
     }));
 
-    /** Create route for CSS */
-    this.app().get(`/css/:file`, (req, res) => {
-      res.sendFile(path.resolve(__dirname + `/../css/` + req.params.file));
-    });
-
-    /** Create route for images */
-    this.app().get(`/images/:file`, (req, res) => {
-      res.sendFile(path.resolve(__dirname + `/../node_modules/eztables/images/` + req.params.file));
-    });
-
     /** Use the following middleware to log requests and attach various useful variables to request object */
     this.app().use(async (req, res, next) => {
       req.markup = ``;
@@ -184,6 +174,21 @@ class AutoFormServer {
 
     /** Create router for this auto form */
     const router = express.Router();
+
+    /** Create route for edit icon */
+    router.get(`/images/` + path.basename(autoform.editIconPath), (req, res) => {
+      res.sendFile(autoform.editIconPath);
+    });
+    
+    /** Create route for archive icon */
+    router.get(`/images/` + path.basename(autoform.archiveIconPath), (req, res) => {
+      res.sendFile(autoform.archiveIconPath);
+    });
+    
+    /** Create route for delete icon */
+    router.get(`/images/` + path.basename(autoform.deleteIconPath), (req, res) => {
+      res.sendFile(autoform.deleteIconPath);
+    });
     
     /** Create route to logout */
     router.all(`/logout`, (req, res) => {
