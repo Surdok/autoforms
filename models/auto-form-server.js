@@ -200,14 +200,14 @@ class AutoFormServer {
     });
 
     /** Output header */
-    router.use(autoform.headerTemplate);
+    router.use(autoform.headerTemplate());
 
     /** Create 'before' routes to list, add, edit, archive, login, and create templates */
-    router.all(`/list`, autoform.listTemplateBefore);
-    router.all(`/add`, autoform.addTemplateBefore);
-    router.all(`/edit`, autoform.editTemplateBefore);
-    router.all(`/login`, autoform.loginTemplateBefore);
-    router.all(`/create`, autoform.createTemplateBefore);
+    router.all(`/list`, autoform.listTemplateBefore());
+    router.all(`/add`, autoform.addTemplateBefore());
+    router.all(`/edit`, autoform.editTemplateBefore());
+    router.all(`/login`, autoform.loginTemplateBefore());
+    router.all(`/create`, autoform.createTemplateBefore());
 
     /** Create routes to list, add, edit, and archive records */
     router.all(`/list`, views.list(autoform));
@@ -220,14 +220,14 @@ class AutoFormServer {
     router.all(`/create`, views.create(autoform));
 
     /** Create 'after' routes to list, add, edit, archive, login, and create templates */
-    router.all(`/list`, autoform.listTemplateAfter);
-    router.all(`/add`, autoform.addTemplateAfter);
-    router.all(`/edit`, autoform.editTemplateAfter);
-    router.all(`/login`, autoform.loginTemplateAfter);
-    router.all(`/create`, autoform.createTemplateAfter);
+    router.all(`/list`, autoform.listTemplateAfter());
+    router.all(`/add`, autoform.addTemplateAfter());
+    router.all(`/edit`, autoform.editTemplateAfter());
+    router.all(`/login`, autoform.loginTemplateAfter());
+    router.all(`/create`, autoform.createTemplateAfter());
 
     /** Output header */
-    router.use(autoform.footerTemplate);
+    router.use(autoform.footerTemplate());
     
     /** Render output and send to user */
     router.use((req, res, next) => res.send(req.page.render()));
