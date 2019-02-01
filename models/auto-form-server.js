@@ -176,17 +176,17 @@ class AutoFormServer {
     const router = express.Router();
 
     /** Create route for edit icon */
-    router.get(`/images/` + path.basename(autoform.editIconPath), (req, res) => {
+    router.get(`/images/` + path.basename(autoform.editIconPath()), (req, res) => {
       res.sendFile(autoform.editIconPath);
     });
     
     /** Create route for archive icon */
-    router.get(`/images/` + path.basename(autoform.archiveIconPath), (req, res) => {
+    router.get(`/images/` + path.basename(autoform.archiveIconPath()), (req, res) => {
       res.sendFile(autoform.archiveIconPath);
     });
     
     /** Create route for delete icon */
-    router.get(`/images/` + path.basename(autoform.deleteIconPath), (req, res) => {
+    router.get(`/images/` + path.basename(autoform.deleteIconPath()), (req, res) => {
       res.sendFile(autoform.deleteIconPath);
     });
     
