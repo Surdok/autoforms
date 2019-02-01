@@ -1,6 +1,6 @@
 {
   "name": "autoforms",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Semi-automatic Form Generation and Processing For Routine Applications",
   "main": "index.js",
   "scripts": {
