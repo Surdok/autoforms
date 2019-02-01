@@ -18,22 +18,20 @@ module.exports = (autoform) => {
         return;
       }
       
-      if ( req.method == `POST` ) {
-        /** Create record */
-        const record = new autoform.Record();
-        
-        /** Load record */
-        const result = await record.load(req.query.id, req.db);
-        
-        if ( !result )
-          throw new ReferenceError(`views.delete(): No record exists with that id number.`);
+      /** Create record */
+      const record = new autoform.Record();
 
-        /** Delete record */
-        await record.delete(req.db);
-        
-        /** Redirect to list at previous offset */
-        res.redirect(`list?offset=${req.body.offset}`);
-      }
+      /** Load record */
+      const result = await record.load(req.query.id, req.db);
+
+      if ( !result )
+        throw new ReferenceError(`views.delete(): No record exists with that id number.`);
+
+      /** Delete record */
+      await record.delete(req.db);
+
+      /** Redirect to list at previous offset */
+      res.redirect(`list?offset=${req.query.offset}`);
 
     /** Call next express handler */
     next();

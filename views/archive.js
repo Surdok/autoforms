@@ -19,25 +19,23 @@ module.exports = (autoform) => {
         return;
       }
       
-      if ( req.method == `POST` ) {
-        /** Create record */
-        const record = new autoform.Record();
-        
-        /** Load record */
-        const result = await record.load(req.query.id, req.db);
-        
-        if ( !result )
-          throw new ReferenceError(`views.archive(): No record exists with that id number.`);
-        
-        /** Set active boolean to false */
-        record.active(false);
-        
-        /** Update record */
-        await record.update(req.db);
-        
-        /** Redirect to list at previous offset */
-        res.redirect(`list?offset=${req.body.offset}`);
-      }
+      /** Create record */
+      const record = new autoform.Record();
+
+      /** Load record */
+      const result = await record.load(req.query.id, req.db);
+
+      if ( !result )
+        throw new ReferenceError(`views.archive(): No record exists with that id number.`);
+
+      /** Set active boolean to false */
+      record.active(false);
+
+      /** Update record */
+      await record.update(req.db);
+
+      /** Redirect to list at previous offset */
+      res.redirect(`list?offset=${req.query.offset}`);
     } catch ( err ) {
       console.log(err);
     } finally {

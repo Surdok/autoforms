@@ -264,7 +264,7 @@ module.exports = (autoform, objClass) => {
       if ( offset + numRows <  count[0].numRows )
         p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}";`).text(`&gt;&gt;`);
       
-      if ( req.user && ( autoform.addPermission() == -1 || req.user.permission().includes(autoform.addPermission()) ) ) {
+      if ( req.user && ( autoform.addPermission() == -1 || req.user.permissions().includes(autoform.addPermission()) ) ) {
         p.lineBreak();
         p.button().addClass(`addButton`).type(`button`).attr(`onclick`, `javascript:location="add";`).text(`Add Record`);
       }
