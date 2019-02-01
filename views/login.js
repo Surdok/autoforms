@@ -47,8 +47,12 @@ module.exports = (autoform) => {
           req.session.password = user.password();
 
           /** Success, redirect to home */
-          if ( req.query.return == `edit` && !isNaN()
-            res.redirect(req.query.return || `list`);
+          if ( req.body.return == `edit` && !isNaN(req.body.id) )
+            res.redirect(`edit&id=${req.body.id}`);
+          else if ( req.body.return == `list` && !isNaN(req.body.offset) )
+            res.redirect(`list&offset=${req.body.offset}`);
+          else
+            res.redirect(`list`);
 
           return;
         }
@@ -58,6 +62,18 @@ module.exports = (autoform) => {
       }
     }
 
+    /** If return is passed, add hidden input for it */
+    if ( req.query.id )
+      form.hidden().name(`return`).value(req.escape(req.query.return));
+    
+    /** If id is passed, add hidden input for it */
+    if ( req.query.id )
+      form.hidden().name(`id`).value(req.escape(req.query.id));
+    
+    /** If offset is passed, add hidden input for it */
+    if ( req.query.id )
+      form.hidden().name(`offset`).value(req.escape(req.query.offset));
+    
     /** Create username and password inputs */
     form.text().cols(16).type(`text`).name(`username`).label(`Username:`).required(true);
     form.text().cols(16).type(`password`).name(`password`).label(`Password:`).required(true);

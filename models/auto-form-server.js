@@ -64,7 +64,7 @@ class AutoFormServer {
     this.app().use(async (req, res, next) => {
       req.markup = ``;
       req.db = this.db();
-      req.htmlescape = htmlspecialchars;
+      req.escape = htmlspecialchars;
 
       /** Log the page request */
       console.log(`${req.method} ${url.parse(req.originalUrl).pathname} requested by ${req.ip} (Worker ${process.pid})`);

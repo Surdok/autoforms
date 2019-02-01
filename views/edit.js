@@ -73,10 +73,10 @@ module.exports = (autoform) => {
       form.method(`POST`);
       
       /** Add hidden input for id */
-      form.hidden().name(`id`).value(req.query.id);
+      form.hidden().name(`id`).value(req.escape(req.query.id));
       
       /** Add hidden input for offset */
-      form.hidden().name(`offset`).value(req.query.offset);
+      form.hidden().name(`offset`).value(req.escape(req.query.offset));
       
       /** Add form heading */
       form.heading().rank(1).text(`Edit Record`);
