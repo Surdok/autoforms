@@ -192,6 +192,16 @@ class AutoFormServer {
     /** Create router for this auto form */
     const router = express.Router();
 
+    /** Create route for autoforms CSS */
+    router.get(`/css/` + path.basename(autoform.cssPath()), (req, res) => {
+      res.sendFile(autoform.cssPath());
+    });
+    
+    /** Create route for autoforms CSS map */
+    router.get(`/css/` + path.basename(autoform.cssPath().replace(`.css`, `.css.map`)), (req, res) => {
+      res.sendFile(autoform.cssPath().replace(`.css`, `.css.map`));
+    });
+    
     /** Create route for edit icon */
     router.get(`/images/` + path.basename(autoform.editIconPath()), (req, res) => {
       res.sendFile(autoform.editIconPath());

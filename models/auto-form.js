@@ -16,6 +16,7 @@ const configAutoForm = {
     { name: `deletePermission`, type: `int`, default: -1 },
     { name: `editPermission`, type: `int`, default: -1 },
     { name: `archivePermission`, type: `int`, default: -1 },
+    { name: `cssPath`, type: `text`, default: path.resolve(__dirname + `/../css/autoforms.css`) },
     { name: `editIconPath`, type: `text`, default: path.resolve(__dirname + `/../images/edit.png`) },
     { name: `archiveIconPath`, type: `text`, default: path.resolve(__dirname + `/../images/archive.png`) },
     { name: `deleteIconPath`, type: `text`, default: path.resolve(__dirname + `/../images/delete.png`) },
