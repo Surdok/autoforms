@@ -102,15 +102,15 @@ module.exports = (autoform) => {
 
       /** If user is logged in and table is editable, add header placeholder for edit button */
       if ( req.user && ( autoform.editPermission() == -1 || req.user.permissions().includes(autoform.editPermission()) ) && autoform.canEdit() )
-        p.tableHeader().style(`width: 20px; text-align: center;`).text(`&nbsp;`);
+        p.tableHeader().style(`width: 30px; text-align: center;`).text(`&nbsp;`);
 
       /** If user is logged in and table is archivable, add header placeholder for archive button */
       if ( req.user && ( autoform.archivePermission() == -1 || req.user.permissions().includes(autoform.archivePermission()) ) && autoform.canArchive() )
-        p.tableHeader().style(`width: 20px; text-align: center;`).text(`&nbsp;`);
+        p.tableHeader().style(`width: 30px; text-align: center;`).text(`&nbsp;`);
       
       /** If user is logged in and table is deletable, add header placeholder for delete button */
       if ( req.user && ( autoform.deletePermission() == -1 || req.user.permissions().includes(autoform.deletePermission()) ) && autoform.canDelete() )
-        p.tableHeader().style(`width: 20px; text-align: center;`).text(`&nbsp;`);
+        p.tableHeader().style(`width: 30px; text-align: center;`).text(`&nbsp;`);
 
       /** Start table body */
       p.tableBody();
