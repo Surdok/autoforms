@@ -82,7 +82,7 @@ module.exports = (autoform) => {
       const p = req.page;
 
       /** Start table */
-      p.table();
+      p.table().style(`table-layout: fixed;`);
       
       /** Start table head */
       p.tableHead();
@@ -149,21 +149,21 @@ module.exports = (autoform) => {
         /** If user is logged in and record is editable, add edit image and link */
         if ( req.user && autoform.canEdit() ) {
           p.tableData();
-          p.anchor(`tableData`).style(`width: 20px;`).href(`edit?id=${row.id}&offset=${offset}`);
+          p.anchor(`tableData`).style(`width: 20px; text-align: center;`).href(`edit?id=${row.id}&offset=${offset}`);
           p.image(`anchor`).src(`images/` + path.basename(autoform.editIconPath()));
         }
         
         /** If user is logged in and record is archivable, add archive image and link */
         if ( req.user && autoform.canArchive() ) {
           p.tableData();
-          p.anchor(`tableData`).style(`width: 20px;`).href(`archive?id=${row.id}&offset=${offset}`);
+          p.anchor(`tableData`).style(`width: 20px; text-align: center;`).href(`archive?id=${row.id}&offset=${offset}`);
           p.image(`anchor`).src(`images/` + path.basename(autoform.archiveIconPath()));
         }
         
         /** If user is logged in and record is deletable, add delete image and link */
         if ( req.user && autoform.canDelete() ) {
           p.tableData();
-          p.anchor(`tableData`).style(`width: 20px;`).href(`delete?id=${row.id}&offset=${offset}`);
+          p.anchor(`tableData`).style(`width: 20px; text-align: center;`).href(`delete?id=${row.id}&offset=${offset}`);
           p.image(`anchor`).src(`images/` + path.basename(autoform.deleteIconPath()));
         }
       });
