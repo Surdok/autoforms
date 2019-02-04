@@ -340,6 +340,10 @@ td, th {
   font-weight: bold;
 }
 
+.text-center {
+  text-align: center;
+}
+
 button.paging {
   margin: 20px 0px 10px 0px;
   width: 40px;
