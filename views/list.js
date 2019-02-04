@@ -129,20 +129,20 @@ module.exports = (autoform) => {
           
           /** Add table data for column value */
           if ( property.type() == `date` ) {
-            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(moment(row[key]).format(`MM-DD-Y`));
+            p.tableData().addClass(property.listCenter() ? `text-center` : `text-left`).text(moment(row[key]).format(`MM-DD-Y`));
           } else if ( property.type() == `datetime` ) {
-            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(moment(row[key]).format(`MM-DD-Y HH:mm:ss`));
+            p.tableData().addClass(property.listCenter() ? `text-center` : `text-left`).text(moment(row[key]).format(`MM-DD-Y HH:mm:ss`));
           } else if ( property.type() == `time` ) {
-            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(moment(row[key]).format(`HH:mm:ss`));
+            p.tableData().addClass(property.listCenter() ? `text-center` : `text-left`).text(moment(row[key]).format(`HH:mm:ss`));
           } else if ( [`text`, `int`, `double`].includes(property.type()) && property.options().length > 0 ) {
             const option = property.options().find(x => x.value == row[key]);
             
-            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(option.label);
+            p.tableData().addClass(property.listCenter() ? `text-center` : `text-left`).text(option.label);
           } else if ( property.type() == `color` ) {
-            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`);
+            p.tableData().addClass(property.listCenter() ? `text-center` : `text-left`);
             p.div(`tableData`).style(`margin: auto; border: 1px solid black; background: ${row[key]}; min-width: 25px; min-height: 15px;`).text(`&nbsp;`);
           } else {
-            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(row[key]);
+            p.tableData().addClass(property.listCenter() ? `text-center` : `text-left`).text(row[key]);
           }
         });
         
