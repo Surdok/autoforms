@@ -174,15 +174,15 @@ module.exports = (autoform) => {
         let colspan = orderedListProperties.length + remainingListProperties.length;
         
         /** Account for edit column, if applicable */
-        if ( req.user && autoform.canEdit() )
+        if ( req.user && ( autoform.editPermission() == -1 || req.user.permissions().includes(autoform.editPermission()) ) && autoform.canEdit() )
           colspan++;
         
         /** Account for archive column, if applicable */
-        if ( req.user && autoform.canArchive() )
+        if ( req.user && ( autoform.archivePermission() == -1 || req.user.permissions().includes(autoform.archivePermission()) ) && autoform.canArchive() )
           colspan++;
         
         /** Account for delete column, if applicable */
-        if ( req.user && autoform.canDelete() )
+        if ( req.user && ( autoform.deletePermission() == -1 || req.user.permissions().includes(autoform.deletePermission()) ) && autoform.canDelete() )
           colspan++;
         
         /** Output row with full width cell indicating no records found */
