@@ -20,7 +20,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
-    "ezforms": "^1.4.2",
+    "ezforms": "^2.0.1",
     "ezhtml": "^1.4.3",
     "ezobjects-mysql": "^6.1.8",
     "htmlspecialchars": "^1.0.5",
