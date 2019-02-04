@@ -261,7 +261,7 @@ module.exports = (autoform) => {
       
       /** If this isn't the last page, add a 'far ahead' button */
       if ( offset + numRows <  count[0].numRows )
-        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${numPages * offset - offset}";`).text(`&gt;&gt;`);
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${numPages * numRows - numRows}";`).text(`&gt;&gt;`);
       
       if ( req.user && ( autoform.addPermission() == -1 || req.user.permissions().includes(autoform.addPermission()) ) ) {
         p.lineBreak();
