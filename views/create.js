@@ -19,8 +19,8 @@ module.exports = () => {
     if ( req.method == `POST` ) {
       try {
         /** Validate username. */
-        if ( !req.body.username.match(`^[a-zA-Z]{1}[a-zA-Z0-9]{4,}$`) )
-          throw new Error(`Your username must start with a letter, contain only letters or numbers, and be at least 5 characters!`);
+        if ( !req.body.username.match(`^[a-zA-Z0-9]{5,}$`) )
+          throw new Error(`Your username must contain only letters or numbers, and be at least 5 characters!`);
 
         /** Validate password */
         if ( !req.body.password.match(/[0-9]{1}/) || !req.body.password.match(/[A-Z]{1}/) || !req.body.password.match(/[a-z]{1}/) )
