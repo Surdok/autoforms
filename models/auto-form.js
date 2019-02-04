@@ -32,6 +32,7 @@ const configAutoForm = {
     { name: `createTemplateAfter`, type: `function`, default: (req, res, next) => next() },
     { name: `footerTemplate`, type: `function`, default: (req, res, next) => next() },
     { name: `configRecord`, type: `object` },
+    { name: `pagingButtons`, type: `int`, default: 9 },
     { name: `properties`, type: `array`, arrayOf: { instanceOf: `AutoFormProperty` } }
   ]
 };

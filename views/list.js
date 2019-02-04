@@ -92,25 +92,25 @@ module.exports = (autoform) => {
 
       /** Add ordered list headers */
       orderedListProperties.forEach((property) => {
-        p.tableHeader().text(property.listHeader());
+        p.tableHeader().addClass(property.listCenter ? `text-center` : `text-left`).text(property.listHeader());
       });
 
       /** Add remaining non-ordered list headers */
       remainingListProperties.forEach((property) => {
-        p.tableHeader().text(property.listHeader());
+        p.tableHeader().addClass(property.listCenter ? `text-center` : `text-left`).text(property.listHeader());
       });
 
       /** If user is logged in and table is editable, add header placeholder for edit button */
       if ( req.user && ( autoform.editPermission() == -1 || req.user.permissions().includes(autoform.editPermission()) ) && autoform.canEdit() )
-        p.tableHeader().text(`&nbsp;`);
+        p.tableHeader().style(`width: 20px;`).text(`&nbsp;`);
 
       /** If user is logged in and table is archivable, add header placeholder for archive button */
       if ( req.user && ( autoform.archivePermission() == -1 || req.user.permissions().includes(autoform.archivePermission()) ) && autoform.canArchive() )
-        p.tableHeader().text(`&nbsp;`);
+        p.tableHeader().style(`width: 20px;`).text(`&nbsp;`);
       
       /** If user is logged in and table is deletable, add header placeholder for delete button */
       if ( req.user && ( autoform.deletePermission() == -1 || req.user.permissions().includes(autoform.deletePermission()) ) && autoform.canDelete() )
-        p.tableHeader().text(`&nbsp;`);
+        p.tableHeader().style(`width: 20px;`).text(`&nbsp;`);
 
       /** Start table body */
       p.tableBody();
@@ -129,20 +129,20 @@ module.exports = (autoform) => {
           
           /** Add table data for column value */
           if ( property.type() == `date` ) {
-            p.tableData().text(moment(row[key]).format(`MM-DD-Y`));
+            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(moment(row[key]).format(`MM-DD-Y`));
           } else if ( property.type() == `datetime` ) {
-            p.tableData().text(moment(row[key]).format(`MM-DD-Y HH:mm:ss`));
+            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(moment(row[key]).format(`MM-DD-Y HH:mm:ss`));
           } else if ( property.type() == `time` ) {
-            p.tableData().text(moment(row[key]).format(`HH:mm:ss`));
+            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(moment(row[key]).format(`HH:mm:ss`));
           } else if ( [`text`, `int`, `double`].includes(property.type()) && property.options().length > 0 ) {
             const option = property.options().find(x => x.value == row[key]);
             
-            p.tableData().text(option.label);
+            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(option.label);
           } else if ( property.type() == `color` ) {
-            p.tableData();
-            p.div(`tableData`).style(`margin: 3px; border: 1px solid black; background: ${row[key]}; min-width: 25px; min-height: 15px;`).text(`&nbsp;`);
+            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`);
+            p.div(`tableData`).style(`margin: auto; border: 1px solid black; background: ${row[key]}; min-width: 25px; min-height: 15px;`).text(`&nbsp;`);
           } else {
-            p.tableData().text(row[key]);
+            p.tableData().addClass(property.listCenter ? `text-center` : `text-left`).text(row[key]);
           }
         });
         
@@ -210,7 +210,7 @@ module.exports = (autoform) => {
        * the page number button around the current page evenly, except when up against the
        * first or last page.  We'll do this by looping until numButtons gets to 9...
        */
-      while ( numButtons < 9 ) {
+      while ( numButtons < autoform.pagingButtons() ) {
         /** If it's time for a previous page button, add it */
         if ( which == 1 && startPage - 1 >= 1 ) {
           numButtons++;

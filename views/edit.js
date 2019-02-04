@@ -124,31 +124,31 @@ module.exports = (autoform) => {
         
         /** Otherwise, if the property type is 'int' and there are no options... */
         else if ( property.type() == `int` && property.options().length == 0 )
-          form.number().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
+          form.number().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
         
         /** Otherwise, if the property type is 'double'... */
         else if ( property.type() == `double` && property.options().length == 0 )
-          form.number().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
+          form.number().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
       
         /** Otherwise, if the property type is 'date'... */
         else if ( property.type() == `date` )
-          form.date().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(moment(record[property.name()]()).format(`Y-MM-DD`)).required(property.required()).disabled(property.disabled());
+          form.date().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(moment(record[property.name()]()).format(`Y-MM-DD`)).required(property.required()).disabled(property.disabled());
       
         /** Otherwise, if the property type is 'datetime'... */
         else if ( property.type() == `datetime` )
-          form.datetime().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(moment(record[property.name()]()).format(`Y-MM-DDTHH:mm`)).required(property.required()).disabled(property.disabled());
+          form.datetime().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(moment(record[property.name()]()).format(`Y-MM-DDTHH:mm`)).required(property.required()).disabled(property.disabled());
       
         /** Otherwise, if the property type is 'time'... */
         else if ( property.type() == `time` )
-          form.time().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
+          form.time().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
       
         /** Otherwise, if the property type is 'email'... */
         else if ( property.type() == `email` )
-          form.email().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
+          form.email().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
       
         /** Otherwise, if the property type is 'time'... */
         else if ( property.type() == `tel` )
-          form.tel().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
+          form.tel().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).pattern(property.pattern()).value(record[property.name()]()).required(property.required()).disabled(property.disabled());
       
         /** Otherwise, if the property type is 'color'... */
         else if ( property.type() == `color` )
@@ -156,11 +156,11 @@ module.exports = (autoform) => {
       
         /** Otherwise, if the property type is 'textarea'... */
         else if ( property.type() == `textarea` )
-          form.textarea().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled()).text(record[property.name()]());
+          form.textarea().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled()).text(record[property.name()]());
       
         /** Otherwise, if the property type is 'textarea'... */
         else if ( property.type() == `file` )
-          form.file().colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled());
+          form.file().addClass(property.inputCenter ? `text-center` : `text-left`).colsBefore(property.inputColumnsBefore()).cols(property.inputColumns()).colsAfter(property.inputColumnsAfter()).name(property.name()).label(property.inputLabel()).required(property.required()).disabled(property.disabled());
       
         /** Otherwise, if the property type is 'array' and input type is 'checkboxes'... */
         else if ( property.type() == `array` && property.inputType() == `checkboxes` ) {
