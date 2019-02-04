@@ -238,11 +238,11 @@ module.exports = (autoform) => {
       
       /** If this isn't the first page, add a 'far left' button */
       if ( offset - 15 >= 0 )
-        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.max(0, offset - numRows * 10)}";`).text(`&lt;&lt;`);
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=0";`).text(`&lt;&lt;`);
       
       /** If this isn't the first page, add a 'previous' button */
       if ( offset - 15 >= 0 )
-        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${offset - numRows}";`).text(`&lt;`);
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.max(0, offset - numRows * 10)}";`).text(`&lt;`);
       
       /** Loop from the identified start page number to identified finish page number */
       for ( let i = startPage; i <= finishPage; i++ ) {
@@ -257,11 +257,11 @@ module.exports = (autoform) => {
       
       /** If this isn't the last page, add a 'next' button */
       if ( offset + numRows <  count[0].numRows )
-        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${offset + numRows}";`).text(`&gt;`);
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}";`).text(`&gt;`);
       
       /** If this isn't the last page, add a 'far ahead' button */
       if ( offset + numRows <  count[0].numRows )
-        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${Math.min((numPages - 1) * numRows, offset + numRows * 10)}";`).text(`&gt;&gt;`);
+        p.button().addClass(`paging`).type(`button`).attr(`onclick`, `javascript:location="list?offset=${numPages * offset - offset}";`).text(`&gt;&gt;`);
       
       if ( req.user && ( autoform.addPermission() == -1 || req.user.permissions().includes(autoform.addPermission()) ) ) {
         p.lineBreak();
