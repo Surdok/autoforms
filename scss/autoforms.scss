@@ -46,6 +46,10 @@
 
 $num-cols: 16;
 
+body {
+  margin: 0px;
+}
+
 form, * {
   @include box-sizing(border-box);
 }

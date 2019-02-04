@@ -1,3 +1,7 @@
+body {
+  margin: 0px;
+}
+
 form, * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -340,8 +344,16 @@ td, th {
   font-weight: bold;
 }
 
+.text-left {
+  text-align: left;
+}
+
 .text-center {
   text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 button.paging {
