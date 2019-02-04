@@ -92,12 +92,12 @@ module.exports = (autoform) => {
 
       /** Add ordered list headers */
       orderedListProperties.forEach((property) => {
-        p.tableHeader().addClass(property.listCenter ? `text-center` : `text-left`).text(property.listHeader());
+        p.tableHeader().addClass(property.listCenter() ? `text-center` : `text-left`).text(property.listHeader());
       });
 
       /** Add remaining non-ordered list headers */
       remainingListProperties.forEach((property) => {
-        p.tableHeader().addClass(property.listCenter ? `text-center` : `text-left`).text(property.listHeader());
+        p.tableHeader().addClass(property.listCenter() ? `text-center` : `text-left`).text(property.listHeader());
       });
 
       /** If user is logged in and table is editable, add header placeholder for edit button */
