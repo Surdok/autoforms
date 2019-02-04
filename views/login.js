@@ -79,8 +79,8 @@ module.exports = () => {
     form.text().cols(16).type(`password`).name(`password`).label(`Password:`).required(true);
 
     /** Create buttons */
-    form.button().cols(6).colsBefore(2).type(`button`).attr(`onclick`, `javascript:location="create";`).text(`Create Account`);
-    form.button().cols(6).colsAfter(2).type(`submit`).text(`Submit`);
+    form.button().cols(8).type(`button`).attr(`onclick`, `javascript:location="create";`).text(`Create Account`);
+    form.button().cols(8).type(`submit`).text(`Submit`);
 
     /** Append form to EZ HTML page */
     req.page.container([`div`, `body`]).append(form);
