@@ -223,7 +223,7 @@ class AutoFormServer {
       delete req.session.username;
       delete req.session.password;
 
-      res.redirect(`/login`);
+      res.redirect(`login`);
     });
     
     /** Output header */
