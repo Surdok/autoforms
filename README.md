@@ -1,4 +1,4 @@
-# AutoForms v2.1.1
+# AutoForms v2.1.2
 
 Automatic form generation for basic table management.
 
